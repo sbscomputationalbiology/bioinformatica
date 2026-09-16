@@ -1,0 +1,1614 @@
+---
+title: "Práctica 7: Pipeline DADA2 — 16S bacteriano (PRJNA665712 + PRJNA865795)"
+subtitle: "Control de calidad, remoción de primers e inferencia de ASVs, parametrizado por proyecto"
+author: "Samuel"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+lang: es
+---
+
+## Objetivo
+
+Documentar el script `dada2.R`: el mismo pipeline DADA2 (calidad, remoción de
+cebadores, inferencia de ASVs, taxonomía) corrido **una vez por cada
+BioProject** del curso 2551 — `PRJNA665712` y `PRJNA865795` — a partir de sus
+FASTQ ya descargados (por `bash-PRJNA665712.sh` / `bash-PRJNA865795.sh`).
+
+A diferencia de la versión anterior de este documento (escrita solo para
+`PRJNA665712`), aquí el proyecto activo es un **parámetro** (`PROJECT_ID`,
+sección 1): el resto del pipeline es idéntico para ambos, así que corres el
+documento completo una vez con cada valor y obtienes dos resultados
+independientes en `results/PRJNA665712/` y `results/PRJNA865795/`. La razón de
+combinarlos en un solo script (en vez de dos documentos separados) es que
+vas a alinear (MSA) las secuencias representativas de ambos proyectos juntas
+más adelante: la sección 12 deja los FASTA de cada proyecto listos para eso
+(ids de ASV prefijados por proyecto, para que no choquen al combinarlos), y
+la sección 18 (nueva, corre una sola vez al final) los junta de hecho —
+ASVs de los dos proyectos más los controles de referencia— en un único
+`ASVs_16S_combined.fasta`. El script de alineamiento en sí todavía no está
+en este documento; queda como siguiente entrega, tomando ese FASTA
+combinado como entrada.
+
+Los bloques de código se muestran con `eval: false`: este `.qmd` es de
+referencia metodológica, no un pipeline que se ejecute al renderizarlo.
+Los objetos costosos se guardan en `results/<PROJECT_ID>/rds/16S/`; si el RDS
+ya existe, el chunk lo carga con `readRDS()` y no repite el cálculo. Para
+cargar todos los RDS de un proyecto en una sesión nueva se puede ejecutar
+`load_all_rds()` después de la sección 1.
+Cada chunk es el código completo de esa sección — se pueden correr en orden,
+uno por uno, en una sesión de R interactiva (Positron/RStudio), pausando en
+la sección 7 para revisar los perfiles de calidad antes de fijar `truncLen`
+en la sección 8.
+
+## Contexto: qué se sabe de cada proyecto
+
+::: {.callout-note}
+**PRJNA665712 — protocolo de biblioteca confirmado.** Las bibliotecas de
+amplicón del gen 16S rRNA se prepararon a partir de 12.5 ng de ADN como
+material de partida, siguiendo el protocolo de PCR de doble paso (double-pass
+PCR) descrito en la guía de preparación de bibliotecas 16S de Illumina
+(Illumina, USA). Se amplificó la región V3-V4 del gen 16S rRNA con los
+cebadores 341F y 785R, fusionados con los adaptadores de Illumina — el mismo
+par que ya usaba este pipeline por defecto para `PRJNA865795` (sección 1),
+ahora **confirmado** también para este proyecto en vez de asumido por
+similitud. Sigue pendiente confirmar organismo, plataforma/largo de lectura
+exacto y número de muestras; si tienes el `SraRunTable` o la descripción
+completa del estudio, se puede actualizar `cfg$descripcion` (sección 1) con
+esos datos.
+:::
+
+**PRJNA865795** sí está confirmado: Hossain, DeLaune & Gentry (2023,
+*Frontiers in Microbiology*) — microbioma de nódulos de cacahuate
+(*Arachis hypogaea*) de campo, comparando nódulos "grandes" y "pequeños" en
+tres etapas de desarrollo (R2, R4, R7). El estudio también confirmó por PCR
+la presencia de los genes *nifH* y *nodC* (marcadores simbióticos de
+fijación de N₂) en los nódulos, aunque esos dos genes **no** fueron
+secuenciados por amplicón — solo se comprobó su presencia por electroforesis
+en gel. Lo que sí está depositado en el BioProject y es lo que procesa este
+pipeline es la región V3-V4 del 16S rRNA, amplificada de las 24 muestras de
+nódulo (12 grandes + 12 pequeñas) y secuenciada en Illumina MiSeq (250 pb
+pareado-end). El **24** coincide exactamente con el número de accesiones que
+ya viste al correr `bash-PRJNA865795.sh`. La clasificación taxonómica
+original se hizo contra SILVA 138 — el mismo release que ya usa este
+pipeline (secciones 14-15) — y el propio análisis original (vía QIIME 2 /
+`q2-dada2`, no el paquete `dada2` de R, pero el mismo algoritmo por debajo)
+usó `--p-trim-left-f 10 --p-trim-left-r 10 --p-trunc-len-f 250
+--p-trunc-len-r 250`; esos valores se usan como punto de partida para
+`trimLeft`/`truncLen` de este proyecto en la sección 1, aunque de todas
+formas hay que confirmarlos contra tus propios perfiles de calidad (sección
+7), ya que corresponden a la corrida original y no necesariamente a como se
+vean tus FASTQ tras `fasterq-dump`.
+
+::: {.callout-important}
+**Confirmado — `PRJNA665712` mezcla 117 corridas de tres experimentos.**
+Esta accesión agrupa 117 corridas de tres experimentos distintos bajo el
+mismo BioProject, tal como describía una versión anterior de este
+documento. Por eso el filtrado por metadata (secciones 2-3) está activo
+para este proyecto: `cfg$requires_metadata_filter = TRUE` (sección 1) exige
+`SraRunTable-117.csv` en `raw-data/PRJNA665712/csv/` (esta es la ruta que
+`metaPath` realmente comprueba en la sección 1/2 — una versión anterior de
+este callout decía `srr/`, que no coincide con el código; si tu archivo
+está físicamente en `srr/`, muévelo a `csv/` o la sección 2 va a fallar con
+`stop()` al no encontrarlo) y filtra los FASTQ
+contra su columna `Run` antes de correr DADA2. Sin ese filtro,
+`seqtab.nochim16S` combinaría corridas de experimentos no comparables. Para
+`PRJNA865795` no hay evidencia de mezcla de experimentos.
+:::
+
+## Software empleado
+
+| Herramienta | Rol en el pipeline |
+|---|---|
+| **DADA2** (Bioconductor) | Núcleo del pipeline: filtrado, modelo de errores, inferencia de ASVs, fusión de pares, remoción de quimeras, asignación taxonómica (`assignTaxonomy`) |
+| **`plotQualityProfile()`** (parte de DADA2) | Perfiles de calidad Phred — el equivalente que usa este pipeline en vez de correr FastQC por separado |
+| **Cutadapt** | Remoción de los cebadores (y sus variantes reverso-complementarias) de cada lectura, antes del filtrado de calidad |
+| **DECIPHER** (Bioconductor) | Asignación taxonómica alternativa vía `IdTaxa()`, como contraste al resultado de `assignTaxonomy()` |
+| **pdftools** | Convierte a PNG los PDF de perfiles de calidad |
+| **Biostrings / ShortRead** | Manejo de secuencias (orientaciones de cebadores, lectura de FASTQ, exportación a FASTA) |
+| **rentrez** | Descarga de los organismos de control (RefSeq) vía Entrez (`entrez_fetch`), sección 17 |
+
+## Estructura de rutas y resultados
+
+El proyecto **2551** usa una estructura plana (sin los niveles
+`bioinformatics/class-bioinformatics/practice/practice-7/` de la versión
+anterior), con una carpeta por BioProject bajo `raw-data/` y otra bajo
+`results/`:
+
+```
+C:/Users/computationalbiology/Videos/school/
+├── raw-data/
+│   ├── PRJNA665712/           {fasta, srr, sra, fastq}
+│   ├── PRJNA865795/           {fasta, srr, sra, fastq}
+│   ├── silva/                 -- referencias SILVA/DECIPHER, compartidas
+│   └── microorganisms9081662/ -- vacia, no se usa (ver seccion 21a)
+├── results/
+│   ├── PRJNA665712/   {csv, figures, fasta, phred, rds, pdf}
+│   ├── PRJNA865795/   {csv, figures, fasta, phred, rds, pdf}
+│   └── combined/      {fasta/16S, csv/16S}  -- FASTA combinado de ambos
+│                        proyectos, seccion 18
+├── scripts/
+│   ├── qmd/  (este documento)
+│   ├── R/    (dada2.R)
+│   └── bash/ (bash-PRJNA665712.sh, bash-PRJNA865795.sh)
+└── software/
+    └── sratoolkit.3.4.1-win64/, ...
+```
+
+`BASE_ROOT` (sección 1) es el único punto de configuración de esta ruta: la
+cuenta de Windows activa en el equipo del curso es `computationalbiology`
+(confirmado al ubicar `prefetch.exe` en la sesión de depuración de los
+scripts bash), y ahí es donde vive todo el árbol de arriba — no dividido
+entre dos usuarios de Windows como se asumió en una ronda anterior.
+
+Dentro de cada `results/<PROJECT_ID>/`, este script usa un subnivel `16S`
+bajo cada carpeta (p. ej. `csv/16S/`, `fasta/16S/`) — igual que en la
+versión anterior — para dejar espacio si algún día se agrega otro marcador
+(p. ej. *nifH*) sin mezclar archivos.
+
+::: {.callout-note}
+**Sobre `REF_ROOT` (referencias SILVA/DECIPHER) — confirmado.** `raw-data/`
+tiene una carpeta `silva/` propia, hermana de `PRJNA665712/` y
+`PRJNA865795/` (no colgando de ninguna de las dos). Como esas bases de
+referencia no son específicas de un BioProject (son la misma base de datos
+taxonómica para cualquier 16S), la sección 1 las apunta a esa ubicación
+**compartida**: `raw-data/silva/` bajo `BASE_ROOT`. Si ya tienes esos
+archivos descargados en otro lugar, ajusta `REF_ROOT` en la sección 1 antes
+de correr las secciones 14-15.
+:::
+
+## Explicación del script, sección por sección
+
+### 0. Paquetes
+
+```{r}
+#| eval: false
+#| message: false
+#| warning: false
+packages <- c(
+  "bioc::dada2", "bioc::ShortRead", "bioc::DESeq2", "bioc::Biostrings",
+  "bioc::phyloseq", "bioc::DECIPHER", "bioc::microbiome",
+  "vegan", "ggplot2", "RColorBrewer", "ggpubr", "scales", "knitr", "here",
+  "pdftools", "rentrez", "phangorn", "ape", "data.table"
+)
+
+suppressMessages(suppressWarnings({
+  for (pkg_spec in packages) {
+    pkg_name <- sub("^bioc::", "", pkg_spec)
+    if (!requireNamespace(pkg_name, quietly = TRUE)) {
+      renv::install(pkg_spec, prompt = FALSE)
+    }
+    library(pkg_name, character.only = TRUE)
+  }
+}))
+
+set.seed(123)
+```
+
+Sin cambios respecto a la versión anterior: instala solo lo que falte,
+carga todo en silencio, y fija la semilla aleatoria para reproducibilidad
+(DADA2 usa aleatoriedad internamente, p. ej. en el aprendizaje de errores).
+
+### 1. Selección de proyecto y rutas base *(sección reescrita)*
+
+```{r}
+#| eval: false
+# Cambia PROJECT_ID y vuelve a correr TODO el documento (secciones 0-17)
+# para procesar el otro BioProject. Cada corrida escribe en su propia
+# carpeta results/<PROJECT_ID>/, así que una no sobrescribe a la otra.
+
+PROJECT_ID <- "PRJNA665712"   # <-- cambiar a "PRJNA865795" en la segunda corrida
+
+stopifnot(PROJECT_ID %in% c("PRJNA665712", "PRJNA865795"))
+
+BASE_ROOT <- "C:/Users/computationalbiology/Videos/school"
+
+# Parametros especificos de cada BioProject.
+PROJECTS <- list(
+  PRJNA665712 = list(
+    FWD         = "CCTACGGGNGGCWGCAG",       # 341F -- CONFIRMADO (V3-V4, fusionado con adaptador Illumina)
+    REV         = "GACTACHVGGGTATCTAATCC",   # 785R -- CONFIRMADO (V3-V4, fusionado con adaptador Illumina)
+    trimLeft    = c(0, 0),
+    truncLen    = c(240, 160),               # punto de partida arbitrario -- ajustar con la seccion 7
+    descripcion = "16S rRNA V3-V4 (341F/785R, PCR de doble paso, guia Illumina); mezcla 117 corridas de 3 experimentos -- requiere filtro por metadata (ver seccion 2-3)",
+    metadata_file            = "SraRunTable-117.csv",  # confirmado: necesario para separar los 3 experimentos
+    requires_metadata_filter = TRUE
+  ),
+  PRJNA865795 = list(
+    FWD         = "CCTACGGGNGGCWGCAG",       # 341F -- asumido (Hossain et al. 2023 no publica la secuencia exacta)
+    REV         = "GACTACHVGGGTATCTAATCC",   # 785R -- asumido
+    trimLeft    = c(10, 10),                 # igual que --p-trim-left-f/-r en el QIIME2 original
+    truncLen    = c(250, 250),               # igual que --p-trunc-len-f/-r en el QIIME2 original
+    descripcion = "16S rRNA V3-V4, nodulos de cacahuate (Hossain et al. 2023), Illumina MiSeq 250bp PE",
+    metadata_file            = NULL,  # sin nombre fijo conocido -- sigue el patron <PROJECT_ID>_metadata.csv
+    requires_metadata_filter = FALSE
+  )
+)
+
+cfg <- PROJECTS[[PROJECT_ID]]
+FWD <- cfg$FWD
+REV <- cfg$REV
+
+RAW_ROOT <- file.path(BASE_ROOT, "raw-data", PROJECT_ID)
+path16S  <- file.path(RAW_ROOT, "fastq")
+metaPath <- file.path(RAW_ROOT, "csv")   # aqui vive el CSV de metadatos -- obligatorio si cfg$requires_metadata_filter (seccion 2)
+
+RESULTS_ROOT <- file.path(BASE_ROOT, "results", PROJECT_ID)
+
+REF_ROOT <- file.path(BASE_ROOT, "raw-data", "silva")  # confirmado: es donde vive silva/ en tu estructura real de carpetas
+
+check_path <- function(path, description) {
+  if (!file.exists(path) && !dir.exists(path)) {
+    stop(sprintf("ERROR: %s no se encontro en:\n  %s", description, path))
+  }
+}
+
+cutadapt <- Sys.which("cutadapt")
+if (cutadapt == "") {
+  # Respaldo si Sys.which() no lo encuentra en el PATH (usuario Windows
+  # actual confirmado: computationalbiology, mismo perfil que BASE_ROOT
+  # arriba). Se arma con USERPROFILE en vez de dejar el usuario escrito a
+  # mano, para que este mismo .qmd no vuelva a fallar la proxima vez que
+  # otra persona del curso lo corra con su propia cuenta de Windows.
+  cutadapt <- file.path(Sys.getenv("USERPROFILE"), "anaconda3", "Scripts", "cutadapt.exe")
+  # Si tu instalacion es Miniconda (no Anaconda) o vive en un entorno
+  # conda activado con otro nombre, ajusta la ruta de arriba o corre
+  # `where cutadapt` en la terminal de Windows para confirmar la ruta real.
+}
+
+check_path(path16S,  paste("carpeta de FASTQ de", PROJECT_ID))
+check_path(cutadapt, "ejecutable de Cutadapt")
+check_path(REF_ROOT, "carpeta de referencias SILVA/DECIPHER")
+
+result_subdirs <- c(
+  "csv/metadata", "csv/16S",
+  "rds/16S",
+  "phred/16S",
+  "figures/16S",
+  "fasta/16S",
+  "pdf/16S"
+)
+
+for (d in result_subdirs) {
+  dir.create(file.path(RESULTS_ROOT, d), recursive = TRUE, showWarnings = FALSE)
+}
+
+cat("Proyecto activo: ", PROJECT_ID, " -- ", cfg$descripcion, "\n", sep = "")
+
+# -----------------------------------------------------------------------------
+# UTILIDADES RDS
+# -----------------------------------------------------------------------------
+# Cada resultado pesado se guarda en RDS. Si el RDS ya existe, se carga y NO
+# se vuelve a ejecutar el cálculo. Esto permite continuar el análisis desde
+# una sesión nueva de R sin repetir DADA2.
+rds_file <- function(...) file.path(RESULTS_ROOT, "rds", ...)
+
+load_all_rds <- function(verbose = TRUE) {
+  files <- list.files(
+    file.path(RESULTS_ROOT, "rds"),
+    pattern = "\\.RDS$",
+    full.names = TRUE,
+    recursive = TRUE
+  )
+
+  if (length(files) == 0) {
+    warning("No se encontraron archivos RDS en: ",
+            file.path(RESULTS_ROOT, "rds"))
+    return(invisible(character()))
+  }
+
+  for (f in files) {
+    nm <- tools::file_path_sans_ext(basename(f))
+    assign(nm, readRDS(f), envir = .GlobalEnv)
+
+    if (verbose)
+      cat("RDS cargado:", nm, "<-", f, "\n")
+  }
+
+  # cut.16S.RDS contiene las rutas de FASTQ cortados.
+  cut_file <- rds_file("16S", "cut.16S.RDS")
+  if (file.exists(cut_file)) {
+    cut_obj <- readRDS(cut_file)
+    if (!is.null(cut_obj$Fs)) assign("fnFs16S.cut", cut_obj$Fs, .GlobalEnv)
+    if (!is.null(cut_obj$Rs)) assign("fnRs16S.cut", cut_obj$Rs, .GlobalEnv)
+  }
+
+  invisible(files)
+}
+
+cat("Para cargar TODOS los RDS del proyecto sin recalcular:\n")
+cat("  load_all_rds()\n")
+
+cat("RAW_ROOT:    ", RAW_ROOT, "\n")
+cat("RESULTS_ROOT:", RESULTS_ROOT, "\n")
+cat("trimLeft:    ", cfg$trimLeft, " | truncLen:", cfg$truncLen, "\n")
+```
+
+`PROJECTS` es una lista con un elemento por BioProject: cebadores
+(`FWD`/`REV`), los parámetros de recorte de `filterAndTrim()`
+(`trimLeft`/`truncLen`, usados recién en la sección 8), una descripción
+corta, y dos campos nuevos que controlan el filtrado por metadata de las
+secciones 2-3: `metadata_file` (nombre exacto del CSV a buscar, o `NULL`
+para usar el patrón genérico `<PROJECT_ID>_metadata.csv`) y
+`requires_metadata_filter` (si `TRUE`, la sección 3 exige ese CSV y filtra
+los FASTQ contra su columna `Run` antes de seguir). `PRJNA665712` mezcla 117
+corridas de tres experimentos bajo la misma accesión, así que ahí
+`requires_metadata_filter = TRUE` y `metadata_file = "SraRunTable-117.csv"`;
+`PRJNA865795` no lo necesita. `cfg <- PROJECTS[[PROJECT_ID]]` selecciona el
+bloque activo; todo lo demás del script (secciones 2-17) usa `FWD`, `REV`,
+`RAW_ROOT`, `RESULTS_ROOT`, etc. sin volver a mencionar `PROJECT_ID` — por
+eso basta con cambiar una sola línea arriba y volver a correr el documento
+para procesar el otro proyecto. El `stopifnot()` es una salvaguarda simple:
+si algún día agregas un tercer proyecto y olvidas agregarlo también a
+`PROJECTS`, falla aquí con un mensaje claro en vez de más adelante con un
+`NULL` inesperado en `cfg`.
+
+`trimLeft`/`truncLen` ya vienen distintos por proyecto: para `PRJNA865795`
+son los mismos valores que usó el análisis original en QIIME2 (ver
+Contexto); para `PRJNA665712` son un punto de partida genérico heredado del
+pipeline anterior, marcado como arbitrario. En ambos casos, igual que antes,
+hay que confirmarlos revisando los perfiles de calidad propios en la
+sección 7 antes de confiar en ellos para la sección 8.
+
+`raw-data/silva/` en 2551 es una carpeta compartida entre proyectos (no
+colgando de `PRJNA665712/` ni de `PRJNA865795/`), así que `REF_ROOT` apunta
+directo ahí (ver el callout de la sección anterior) — ajústala si tus
+archivos SILVA/DECIPHER están en otro lado.
+
+**Sobre el respaldo de `cutadapt`:** `Sys.which("cutadapt")` es la vía
+normal — funciona si `cutadapt` ya está en el `PATH` de Windows. El
+respaldo (cuando `Sys.which()` devuelve `""`) no trae un nombre de usuario
+escrito a mano; se arma con `Sys.getenv("USERPROFILE")`, que en esta
+máquina resuelve a `C:/Users/computationalbiology` — la misma cuenta bajo
+la que vive `BASE_ROOT`. Al ser dinámico, este respaldo funciona igual si
+alguien más del curso corre este mismo `.qmd` con su propia cuenta de
+Windows, sin necesidad de editar la ruta.
+
+### 2. Metadatos de muestras *(obligatoria para PRJNA665712, opcional para PRJNA865795)*
+
+```{r}
+#| eval: false
+metadata_filename <- if (!is.null(cfg$metadata_file)) cfg$metadata_file else paste0(PROJECT_ID, "_metadata.csv")
+metadata_csv <- file.path(metaPath, metadata_filename)
+
+if (file.exists(metadata_csv)) {
+  metadata16S <- read.csv(metadata_csv, stringsAsFactors = FALSE)
+  cat("Metadatos cargados:", nrow(metadata16S), "filas desde", metadata_csv, "\n")
+
+  write.csv(metadata16S,
+            file.path(RESULTS_ROOT, "csv/metadata", paste0("metadata_", PROJECT_ID, ".csv")),
+            row.names = FALSE)
+} else if (isTRUE(cfg$requires_metadata_filter)) {
+  stop(sprintf(
+    "ERROR: %s mezcla varios experimentos y requiere metadata para filtrar por 'Run' (seccion 3), pero no se encontro:\n  %s",
+    PROJECT_ID, metadata_csv))
+} else {
+  metadata16S <- NULL
+  cat("No se encontro un CSV de metadatos en:\n  ", metadata_csv, "\n", sep = "")
+  cat("El pipeline continua sin el -- no es obligatorio para", PROJECT_ID, ".",
+      "Si mas adelante tienes una tabla de metadatos",
+      "(p. ej. tipo de nodulo/etapa de crecimiento para PRJNA865795),",
+      "colocala en esa ruta y esta seccion la usara automaticamente.\n")
+}
+```
+
+`cfg$metadata_file` (sección 1) fija el nombre exacto del CSV cuando ya se
+conoce (`SraRunTable-117.csv` para `PRJNA665712`); si es `NULL` (como en
+`PRJNA865795`), se usa el patrón genérico `<PROJECT_ID>_metadata.csv`. La
+diferencia clave frente a la versión anterior de esta sección:
+`requires_metadata_filter` (sección 1) hace que la ausencia del archivo sea
+un `stop()` en vez de un aviso para `PRJNA665712`, porque esta accesión
+mezcla 117 corridas de tres experimentos distintos (ver el callout de
+"Contexto") y el filtrado por `Run` de la sección 3 depende de que
+`metadata16S` exista. Para `PRJNA865795`, que no mezcla experimentos, el
+archivo sigue siendo opcional — su único uso ahí es anotar muestras más
+adelante, por ejemplo para agrupar la tabla de abundancia por género de la
+sección 16 según nódulo grande/pequeño y etapa R2/R4/R7 (la comparación de
+Hossain et al. 2023).
+
+### 3. Archivos FASTQ *(sección simplificada)*
+
+```{r}
+#| eval: false
+fnFs16S <- sort(list.files(path16S, pattern = "_1\\.fastq$", full.names = TRUE))
+fnRs16S <- sort(list.files(path16S, pattern = "_2\\.fastq$", full.names = TRUE))
+
+get.sample.name <- function(fname) strsplit(basename(fname), "_")[[1]][1]
+samples.names16S <- unname(sapply(fnFs16S, get.sample.name))
+
+stopifnot(length(fnFs16S) == length(fnRs16S))
+
+cat("Corridas encontradas en fastq/ para", PROJECT_ID, ":", length(samples.names16S), "\n")
+
+if (isTRUE(cfg$requires_metadata_filter)) {
+  # PRJNA665712 mezcla 117 corridas de 3 experimentos bajo el mismo
+  # BioProject (ver el callout de "Contexto") -- filtramos contra la
+  # columna 'Run' de metadata16S (seccion 2) antes de seguir.
+  stopifnot(!is.null(metadata16S), "Run" %in% names(metadata16S))
+
+  keep <- samples.names16S %in% metadata16S$Run
+  cat(sprintf("Filtrando corridas mezcladas (%s): %d de %d coinciden con metadata16S$Run\n",
+              PROJECT_ID, sum(keep), length(keep)))
+
+  fnFs16S <- fnFs16S[keep]
+  fnRs16S <- fnRs16S[keep]
+  samples.names16S <- samples.names16S[keep]
+}
+
+cat("Muestras a procesar tras el filtro:", length(samples.names16S), "\n")
+samples.names16S
+
+samples_rds <- rds_file("16S", "samples.names16S.RDS")
+if (file.exists(samples_rds)) {
+  samples.names16S <- readRDS(samples_rds)
+  cat("Cargado RDS:", samples_rds, "\n")
+} else {
+  saveRDS(samples.names16S, file = samples_rds)
+}
+```
+
+El patrón usa `\\.` (punto literal escapado) y `$` (fin de cadena) para que
+`_1.fastq` no también capture archivos de FastQC que quedaran en la misma
+carpeta. `get.sample.name()` extrae la accesión del nombre de archivo.
+`stopifnot(length(fnFs16S) == length(fnRs16S))` es la comprobación de
+cordura de siempre: forward y reverse deben quedar parejos en cantidad. El
+filtro por `metadata16S$Run` ahora se activa automáticamente cuando
+`cfg$requires_metadata_filter` es `TRUE` (sección 1) — el caso de
+`PRJNA665712`, que mezcla corridas de tres experimentos distintos bajo la
+misma accesión — y se salta por completo para `PRJNA865795`, que no
+necesita filtrarse. El `stopifnot()` justo antes del filtro es la misma
+lógica de `check_path()`: si `metadata16S` no se cargó bien en la sección 2
+(por ejemplo, sin columna `Run`), falla aquí con un mensaje claro en vez de
+producir un `seqtab.nochim16S` silenciosamente mezclado.
+
+### 4. Cebadores 16S
+
+```{r}
+#| eval: false
+allOrients <- function(primer) {
+  require(Biostrings)
+  dna <- DNAString(primer)
+  orients <- c(
+    Forward    = dna,
+    Complement = Biostrings::complement(dna),
+    Reverse    = Biostrings::reverse(dna),
+    RevComp    = Biostrings::reverseComplement(dna)
+  )
+  return(sapply(orients, toString))
+}
+
+primerHits <- function(primer, fn) {
+  nhits <- vcountPattern(primer, sread(readFastq(fn)), fixed = FALSE)
+  return(sum(nhits > 0))
+}
+
+FWD.orients <- allOrients(FWD)
+REV.orients <- allOrients(REV)
+```
+
+`FWD`/`REV` vienen resueltos desde `cfg` en la sección 1 — 341F/785R
+(Klindworth et al. 2013) para ambos proyectos: **confirmado** para
+`PRJNA665712` (ver Contexto) y **asumido** para `PRJNA865795` (Hossain et
+al. 2023 no publica la secuencia exacta de los cebadores). `allOrients()`
+calcula las cuatro orientaciones posibles de un cebador con `Biostrings`,
+porque una lectura puede contenerlo en cualquiera de esas cuatro formas.
+`primerHits()` cuenta en cuántas lecturas de un FASTQ aparece un patrón
+dado, con `fixed = FALSE` para que las bases ambiguas del cebador (código
+IUPAC) actúen como comodines.
+
+### 5. Filtrado de Ns
+
+```{r}
+#| eval: false
+fnFs16S.filtN <- file.path(path16S, "filtN", basename(fnFs16S))
+fnRs16S.filtN <- file.path(path16S, "filtN", basename(fnRs16S))
+
+check_fastq_integrity <- function(fn) {
+  tryCatch({
+    ShortRead::readFastq(fn)
+    NULL
+  }, error = function(e) conditionMessage(e))
+}
+
+probsF16S <- Filter(Negate(is.null), setNames(lapply(fnFs16S, check_fastq_integrity), fnFs16S))
+probsR16S <- Filter(Negate(is.null), setNames(lapply(fnRs16S, check_fastq_integrity), fnRs16S))
+
+if (length(probsF16S) > 0 || length(probsR16S) > 0) {
+  cat("Archivos FASTQ corruptos o incompletos detectados:\n")
+  if (length(probsF16S) > 0) { cat("\nForward:\n"); print(probsF16S) }
+  if (length(probsR16S) > 0) { cat("\nReverse:\n"); print(probsR16S) }
+  stop("Corrige o vuelve a descargar (fasterq-dump/prefetch) los archivos listados ",
+       "arriba antes de continuar con filterAndTrim().")
+}
+
+cat("Chequeo de integridad OK:", length(fnFs16S) + length(fnRs16S),
+    "archivos FASTQ crudos son legibles.\n")
+
+filterAndTrim(fnFs16S, fnFs16S.filtN,
+              fnRs16S, fnRs16S.filtN,
+              maxN = 0, multithread = FALSE)  # multithread = TRUE en Linux/Mac
+
+print(rbind(
+  FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs16S.filtN[[1]]),
+  FWD.ReverseReads  = sapply(FWD.orients, primerHits, fn = fnRs16S.filtN[[1]]),
+  REV.ForwardReads  = sapply(REV.orients, primerHits, fn = fnFs16S.filtN[[1]]),
+  REV.ReverseReads  = sapply(REV.orients, primerHits, fn = fnRs16S.filtN[[1]])
+))
+```
+
+Sin cambios de lógica respecto a la versión anterior: el chequeo de
+integridad evita que `filterAndTrim()` falle más adelante con un error
+críptico sobre un FASTQ corrupto o a medio descargar, y `maxN = 0` aquí solo
+elimina lecturas con bases ambiguas (`N`) antes de poder buscar cebadores
+con `vcountPattern()` — el filtrado real por calidad viene en la sección 8.
+`multithread = FALSE` porque en Windows la implementación multi-hilo de
+DADA2 no está soportada. El `print(rbind(...))` final confirma que el par
+de cebadores efectivamente está presente antes de gastar tiempo
+cortándolo con Cutadapt — para `PRJNA665712` el par 341F/785R ya está
+confirmado por protocolo (ver Contexto), así que si estos conteos salen
+todos en cero, la primera sospecha debe ser un FASTQ mal orientado o
+corrupto, no el par de cebadores.
+
+### 6. Remoción de primers con Cutadapt
+
+```{r}
+#| eval: false
+cut_rds <- rds_file("16S", "cut.16S.RDS")
+
+if (file.exists(cut_rds)) {
+
+  cut_obj <- readRDS(cut_rds)
+  fnFs16S.cut <- cut_obj$Fs
+  fnRs16S.cut <- cut_obj$Rs
+
+  cat("Cargado RDS de Cutadapt:", cut_rds, "\n")
+
+} else {
+
+  path.cut <- file.path(path16S, "cutadapt")
+  if (!dir.exists(path.cut)) dir.create(path.cut, recursive = TRUE)
+
+  fnFs16S.cut <- file.path(path.cut, basename(fnFs16S))
+  fnRs16S.cut <- file.path(path.cut, basename(fnRs16S))
+
+  FWD.RC <- dada2:::rc(FWD)
+  REV.RC <- dada2:::rc(REV)
+
+  R1.flags <- paste("-g", FWD, "-a", REV.RC)
+  R2.flags <- paste("-G", REV, "-A", FWD.RC)
+
+  system2(cutadapt, args = "--version")
+
+  for (i in seq_along(fnFs16S.filtN)) {
+    system2(cutadapt,
+            args = c(R1.flags, R2.flags,
+                     "-n", 2,
+                     "-m", 1,
+                     "-o", fnFs16S.cut[i],
+                     "-p", fnRs16S.cut[i],
+                     fnFs16S.filtN[i], fnRs16S.filtN[i]))
+  }
+
+  print(rbind(
+    FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs16S.cut[[1]]),
+    REV.ForwardReads  = sapply(REV.orients, primerHits, fn = fnFs16S.cut[[1]])
+  ))
+
+  saveRDS(list(Fs = fnFs16S.cut, Rs = fnRs16S.cut), file = cut_rds)
+}
+```
+
+Sin cambios de lógica: `dada2:::rc()` calcula el reverso-complementario de
+cada cebador; `-g`/`-G` recortan el cebador esperado al inicio de R1/R2,
+`-a`/`-A` recortan el reverso-complementario del cebador contrario al final
+de la lectura. `-m 1` descarta cualquier par que quede en 0 pb tras el
+corte. El `print(rbind(...))` posterior repite el chequeo de la sección 5
+pero sobre los FASTQ ya cortados — debería dar ~0 en todas las celdas si
+Cutadapt funcionó correctamente. Para `PRJNA865795` esto también sirve como
+la única confirmación (o refutación) empírica del par de cebadores asumido,
+ya que ahí no viene confirmado por protocolo como en `PRJNA665712`.
+
+### 7. Perfiles de calidad Phred
+
+```{r}
+#| eval: false
+n <- min(20, length(fnFs16S.cut))
+
+qc_pdf_fwd <- file.path(RESULTS_ROOT, "phred/16S", "quality-forward-16S.pdf")
+pdf(qc_pdf_fwd, width = 20, height = 12)
+plotQualityProfile(fnFs16S.cut[1:n])
+dev.off()
+
+fnRs16S.cut.nonempty <- fnRs16S.cut[file.info(fnRs16S.cut)$size > 20]
+n2 <- min(20, length(fnRs16S.cut.nonempty))
+qc_pdf_rev <- file.path(RESULTS_ROOT, "phred/16S", "quality-reverse-16S.pdf")
+pdf(qc_pdf_rev, width = 20, height = 12)
+plotQualityProfile(fnRs16S.cut.nonempty[1:n2])
+dev.off()
+
+qc_pdfs <- c(qc_pdf_fwd, qc_pdf_rev)
+
+for (pdf_path in qc_pdfs) {
+  base_name  <- sub("\\.pdf$", "", basename(pdf_path))
+  png_tmp    <- file.path(RESULTS_ROOT, "figures/16S", paste0(base_name, "_%d.%s"))
+  png_final  <- file.path(RESULTS_ROOT, "figures/16S", paste0(base_name, ".png"))
+
+  converted <- pdftools::pdf_convert(pdf_path, format = "png", dpi = 150,
+                                      filenames = png_tmp, verbose = FALSE)
+  file.rename(converted, png_final)
+
+  file.copy(pdf_path,
+            file.path(RESULTS_ROOT, "pdf/16S", basename(pdf_path)),
+            overwrite = TRUE)
+}
+```
+
+Sin cambios de lógica respecto a la versión anterior (ver esa versión para
+el detalle de por qué la plantilla de `pdf_convert()` necesita `"_%d.%s"` y
+por qué los avisos `PDF error: No display font...` de poppler no son un
+error real). Lo único que cambia es que esto ahora corre una vez por
+proyecto (según `PROJECT_ID` de la sección 1), escribiendo a
+`results/<PROJECT_ID>/phred|figures|pdf/16S/`.
+
+**Este es el punto para pausar y revisar los dos PDF/PNG antes de seguir**:
+el valor de `truncLen` en la siguiente sección depende de dónde cae la
+calidad en cada perfil — y como ahora cada proyecto puede tener su propia
+plataforma/largo de lectura, esta revisión hay que hacerla **por separado**
+para `PRJNA665712` y para `PRJNA865795`, no asumir que el mismo `truncLen`
+sirve para ambos.
+
+### 8. Filtrado de calidad
+
+```{r}
+#| eval: false
+out_rds <- rds_file("16S", "out16S.RDS")
+
+if (file.exists(out_rds)) {
+
+  out16S <- readRDS(out_rds)
+  cat("Cargado RDS:", out_rds, "\n")
+
+} else {
+
+  filtFs16S <- file.path(path16S, "filtered", basename(fnFs16S.cut))
+  filtRs16S <- file.path(path16S, "filtered", basename(fnRs16S.cut))
+  names(filtFs16S) <- samples.names16S
+  names(filtRs16S) <- samples.names16S
+
+  out16S <- filterAndTrim(
+    fnFs16S.cut, filtFs16S, fnRs16S.cut, filtRs16S,
+    trimLeft    = cfg$trimLeft,
+    truncLen    = cfg$truncLen,
+    maxN        = 0,
+    maxEE       = c(2, 2),
+    truncQ      = 2,
+    rm.phix     = TRUE,
+    compress    = TRUE,
+    multithread = FALSE
+  )
+
+  saveRDS(out16S, file = out_rds)
+  write.csv(out16S, file.path(RESULTS_ROOT, "csv/16S", "filter_summary_16S.csv"))
+}
+```
+
+`trimLeft`/`truncLen` ya no están escritos a mano aquí — vienen de `cfg`
+(sección 1), así que cada proyecto usa sus propios valores sin tener que
+editar este chunk. Todo lo demás es igual que antes: `maxEE = c(2, 2)`
+descarta una lectura si su número esperado de errores acumulados supera 2;
+`truncQ = 2` recorta en la primera base con calidad ≤ 2; `rm.phix = TRUE`
+elimina lecturas que coincidan con el genoma de PhiX (contaminante habitual
+de Illumina). Si el par 341F/785R asumido es correcto, el amplicón mide
+~444 pb con primers incluidos, así que forward + reverse (ya descontando
+`trimLeft`) deben sumar más que eso para que `mergePairs()` (sección 10)
+pueda unirlos con solape suficiente.
+
+### 9. Modelo de errores
+
+```{r}
+#| eval: false
+errF_rds <- rds_file("16S", "errF16S.RDS")
+errR_rds <- rds_file("16S", "errR16S.RDS")
+
+if (file.exists(errF_rds) && file.exists(errR_rds)) {
+
+  errF16S <- readRDS(errF_rds)
+  errR16S <- readRDS(errR_rds)
+  cat("Cargados RDS de errores.\n")
+
+} else {
+
+  # Si solo falta uno, se recalculan ambos para mantener consistencia.
+  errF16S <- learnErrors(filtFs16S, multithread = FALSE)
+  errR16S <- learnErrors(filtRs16S, multithread = FALSE)
+
+  saveRDS(errF16S, file = errF_rds)
+  saveRDS(errR16S, file = errR_rds)
+
+}
+
+png(file.path(RESULTS_ROOT, "figures/16S", "errores-forward-16S.png"))
+print(plotErrors(errF16S, nominalQ = TRUE))
+dev.off()
+
+png(file.path(RESULTS_ROOT, "figures/16S", "errores-reverse-16S.png"))
+print(plotErrors(errR16S, nominalQ = TRUE))
+dev.off()
+```
+
+Sin cambios de lógica. `learnErrors()` estima la probabilidad de cada tipo
+de error de secuenciación en función de la calidad Phred, por separado para
+forward y reverse. El `print()` alrededor de `plotErrors()` es necesario
+porque, dentro de un bloque `{ }`, un objeto ggplot no se dibuja
+automáticamente.
+
+### 10. Inferencia de ASVs y fusión de pares
+
+```{r}
+#| eval: false
+dadaF_rds <- rds_file("16S", "dadaFs16S.RDS")
+dadaR_rds <- rds_file("16S", "dadaRs16S.RDS")
+mergers_rds <- rds_file("16S", "mergers16S.RDS")
+seqtab_rds <- rds_file("16S", "seqtab16S.RDS")
+
+if (file.exists(dadaF_rds) &&
+    file.exists(dadaR_rds) &&
+    file.exists(mergers_rds) &&
+    file.exists(seqtab_rds)) {
+
+  dadaFs16S <- readRDS(dadaF_rds)
+  dadaRs16S <- readRDS(dadaR_rds)
+  mergers16S <- readRDS(mergers_rds)
+  seqtab16S <- readRDS(seqtab_rds)
+
+  cat("Cargados RDS de inferencia, fusión y tabla de secuencias.\n")
+
+} else {
+
+  dadaFs16S <- dada(filtFs16S, err = errF16S, multithread = FALSE)
+  dadaRs16S <- dada(filtRs16S, err = errR16S, multithread = FALSE)
+
+  mergers16S <- mergePairs(
+    dadaFs16S, filtFs16S,
+    dadaRs16S, filtRs16S,
+    verbose = TRUE
+  )
+
+  seqtab16S <- makeSequenceTable(mergers16S)
+
+  saveRDS(dadaFs16S, file = dadaF_rds)
+  saveRDS(dadaRs16S, file = dadaR_rds)
+  saveRDS(mergers16S, file = mergers_rds)
+  saveRDS(seqtab16S, file = seqtab_rds)
+}
+
+cat("Dimensiones de la tabla de secuencias:", dim(seqtab16S), "\n")
+cat("Distribucion de longitudes de ASV:\n")
+print(table(nchar(getSequences(seqtab16S))))
+```
+
+Sin cambios de lógica. `dada()` separa, dentro de cada muestra, variantes
+biológicas reales (ASVs) de ruido de secuenciación, usando el modelo de
+errores de la sección 9. `mergePairs()` une cada lectura forward denoised
+con su pareja reverse donde se solapan. Para el par 341F/785R se espera un
+pico angosto de longitudes alrededor de ~420-430 pb; una distribución muy
+dispersa sugiere productos inespecíficos o un `truncLen`/`trimLeft` mal
+elegido para ese proyecto en particular.
+
+### 11. Eliminación de quimeras
+
+```{r}
+#| eval: false
+nochim_rds <- rds_file("16S", "seqtab.nochim16S.RDS")
+
+if (file.exists(nochim_rds)) {
+
+  seqtab.nochim16S <- readRDS(nochim_rds)
+  cat("Cargado RDS:", nochim_rds, "\n")
+
+} else {
+
+  seqtab.nochim16S <- removeBimeraDenovo(
+    seqtab16S,
+    method = "consensus",
+    multithread = FALSE,
+    verbose = TRUE
+  )
+
+  saveRDS(seqtab.nochim16S, file = nochim_rds)
+}
+
+cat("Fraccion de lecturas conservadas tras remover quimeras:",
+    round(sum(seqtab.nochim16S) / sum(seqtab16S), 4), "\n")
+```
+
+Sin cambios de lógica. La fracción reportada es lecturas conservadas, no
+ASVs conservados — típicamente debe ser alta (>90%); una fracción baja
+sugiere problemas en el corte de cebadores o en `truncLen`/`trimLeft`.
+
+### 12. Secuencias representativas → FASTA *(nombres e ids ahora incluyen el proyecto)*
+
+```{r}
+#| eval: false
+asv_seqs_rds <- rds_file("16S", "asv_seqs16S.RDS")
+
+if (file.exists(asv_seqs_rds)) {
+  asv_seqs16S <- readRDS(asv_seqs_rds)
+  asv_ids16S <- paste0(PROJECT_ID, "_ASV", seq_along(asv_seqs16S))
+  cat("Cargado RDS:", asv_seqs_rds, "\n")
+} else {
+  asv_seqs16S <- getSequences(seqtab.nochim16S)
+  asv_ids16S <- paste0(PROJECT_ID, "_ASV", seq_along(asv_seqs16S))
+  saveRDS(asv_seqs16S, file = asv_seqs_rds)
+}
+
+asv_fasta16S <- DNAStringSet(asv_seqs16S)
+names(asv_fasta16S) <- asv_ids16S
+
+fasta_out16S <- file.path(RESULTS_ROOT, "fasta/16S",
+                           paste0("ASVs_16S_", PROJECT_ID, ".fasta"))
+writeXStringSet(asv_fasta16S, filepath = fasta_out16S)
+
+write.csv(data.frame(asv_id = asv_ids16S, sequence = asv_seqs16S),
+          file.path(RESULTS_ROOT, "csv/16S", paste0("ASV_id_map_16S_", PROJECT_ID, ".csv")),
+          row.names = FALSE)
+
+cat("FASTA de ASVs escrito en:", fasta_out16S, "\n")
+```
+
+**Este es el cambio clave para poder combinar ambos proyectos.** Antes, los
+ids de ASV eran genéricos (`ASV1`, `ASV2`, ...) y el archivo se llamaba
+siempre `ASVs_16S.fasta` — si corrías el pipeline dos veces (una por
+proyecto) y luego intentabas juntar los dos FASTA para una alineación
+múltiple, `PRJNA665712_ASV1` y `PRJNA865795_ASV1` serían secuencias
+completamente distintas pero con el mismo nombre, lo cual rompe o confunde
+cualquier herramienta de MSA/BLAST downstream. Ahora el id (`paste0(
+PROJECT_ID, "_ASV", ...)`) y el nombre de archivo (`ASVs_16S_<PROJECT_ID>
+.fasta`) incluyen el proyecto, así que los dos FASTA —
+`results/PRJNA665712/fasta/16S/ASVs_16S_PRJNA665712.fasta` y
+`results/PRJNA865795/fasta/16S/ASVs_16S_PRJNA865795.fasta` — se pueden
+concatenar o combinar con `Biostrings::c()` sin colisión de nombres, listos
+para la alineación múltiple que vas a correr después. La tabla puente
+(`ASV_id_map_16S_<PROJECT_ID>.csv`) conserva la trazabilidad entre el id
+corto y la secuencia completa, igual que antes.
+
+### 13. Tabla de seguimiento de lecturas
+
+```{r}
+#| eval: false
+getN <- function(x) sum(getUniques(x))
+
+track16S <- cbind(
+  out16S,
+  sapply(dadaFs16S,   getN),
+  sapply(dadaRs16S,   getN),
+  sapply(mergers16S,  getN),
+  rowSums(seqtab.nochim16S)
+)
+colnames(track16S) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
+rownames(track16S) <- samples.names16S
+
+write.csv(track16S, file.path(RESULTS_ROOT, "csv/16S", "track16S.csv"))
+track16S
+```
+
+Sin cambios de lógica: tabla estándar de DADA2 para diagnosticar en qué paso
+se pierde más material — una caída abrupta en una columna apunta a qué
+parámetro revisar (p. ej. una caída grande entre `denoisedF`/`denoisedR` y
+`merged` sugiere que `truncLen`/`trimLeft` dejó muy poco solape).
+
+### 14. Asignación taxonómica (SILVA)
+
+```{r}
+#| eval: false
+taxa_rds <- rds_file("16S", "taxa16S.RDS")
+
+if (file.exists(taxa_rds)) {
+
+  taxa16S <- readRDS(taxa_rds)
+  cat("Cargado RDS:", taxa_rds, "\n")
+
+} else {
+
+  silva_train_gz <- file.path(REF_ROOT, "silva_nr99_v138.1_train_set.fa.gz")
+  silva_train_fa <- file.path(REF_ROOT, "silva_nr99_v138.1_train_set.fa")
+  silva_train_set <- if (file.exists(silva_train_gz)) silva_train_gz else silva_train_fa
+  check_path(silva_train_set, "SILVA training set (assignTaxonomy)")
+
+  taxa16S <- assignTaxonomy(
+    seqtab.nochim16S,
+    silva_train_set,
+    multithread = FALSE
+  )
+
+  silva_species_ref <- file.path(REF_ROOT, "silva_species_assignment_v138.1.fa.gz")
+
+  if (file.exists(silva_species_ref)) {
+    taxa16S <- addSpecies(taxa16S, silva_species_ref)
+  } else {
+    warning(
+      "No se encontro '", basename(silva_species_ref),
+      "' en REF_ROOT (", REF_ROOT,
+      "); se omite addSpecies(). taxa16S queda con asignacion hasta genero."
+    )
+  }
+
+  saveRDS(taxa16S, file = taxa_rds)
+}
+```
+
+Sin cambios de lógica respecto a la versión anterior (misma discusión sobre
+por qué se comprueban ambas variantes del training set y por qué
+`addSpecies()` es condicional). `REF_ROOT` vive en `raw-data/silva/`,
+compartido entre proyectos (sección 1) — como SILVA 138 es la misma base
+para cualquier 16S, este archivo se descarga y verifica **una sola vez**,
+no por proyecto.
+
+### 15. Asignación taxonómica con DECIPHER
+
+```{r}
+#| eval: false
+taxid_rds <- rds_file("16S", "taxid.decipher16S.RDS")
+
+if (file.exists(taxid_rds)) {
+
+  taxid16S <- readRDS(taxid_rds)
+  cat("Cargado RDS:", taxid_rds, "\n")
+
+} else {
+
+  ranks <- c("domain", "phylum", "class", "order", "family", "genus", "species")
+
+  dna16S <- DNAStringSet(getSequences(seqtab.nochim16S))
+  decipher_rdata <- file.path(REF_ROOT, "SILVA_SSU_r138_2019.RData")
+  check_path(decipher_rdata, "training set de DECIPHER (SILVA_SSU_r138_2019.RData)")
+  load(decipher_rdata)
+
+  ids16S <- IdTaxa(
+    dna16S,
+    trainingSet,
+    strand = "top",
+    processors = NULL,
+    verbose = FALSE
+  )
+
+  taxid16S <- t(sapply(ids16S, function(x) {
+    m <- match(ranks, x$rank)
+    taxa <- x$taxon[m]
+    taxa[startsWith(taxa, "unclassified_")] <- NA
+    taxa
+  }))
+
+  colnames(taxid16S) <- ranks
+  rownames(taxid16S) <- getSequences(seqtab.nochim16S)
+
+  saveRDS(taxid16S, file = taxid_rds)
+}
+```
+
+Sin cambios de lógica: ruta alternativa a la sección 14, clasificando las
+mismas secuencias contra un `trainingSet` de DECIPHER entrenado sobre
+SILVA. `strand = "top"` asume que las secuencias ya están en la orientación
+correcta. Tener ambas asignaciones (SILVA nativo de DADA2 y DECIPHER)
+permite comparar y quedarse con la que dé mejor resolución para cada
+proyecto.
+
+### 16. Resumen de taxones / géneros detectados
+
+```{r}
+#| eval: false
+taxa16S.print <- taxa16S
+rownames(taxa16S.print) <- NULL
+cat("Taxonomia SILVA (assignTaxonomy) -- primeras filas:\n")
+print(head(taxa16S.print))
+
+write.csv(taxa16S.print,
+          file.path(RESULTS_ROOT, "csv/16S", "taxa16S_print.csv"),
+          row.names = FALSE)
+
+genus16S <- taxa16S[, "Genus"]
+genus16S[is.na(genus16S)] <- "Unclassified"
+
+genus_asv_counts16S <- sort(table(genus16S), decreasing = TRUE)
+cat("\nGeneros detectados (SILVA), por numero de ASVs:\n")
+print(genus_asv_counts16S)
+
+abund_by_genus16S <- rowsum(t(seqtab.nochim16S), group = genus16S, reorder = FALSE)
+abund_by_genus16S <- abund_by_genus16S[order(rowSums(abund_by_genus16S), decreasing = TRUE), , drop = FALSE]
+
+write.csv(abund_by_genus16S,
+          file.path(RESULTS_ROOT, "csv/16S", "genus_abundance_silva_16S.csv"))
+
+genus_decipher16S <- taxid16S[, "genus"]
+genus_decipher16S[is.na(genus_decipher16S)] <- "Unclassified"
+
+genus_asv_counts_decipher16S <- sort(table(genus_decipher16S), decreasing = TRUE)
+cat("\nGeneros detectados (DECIPHER), por numero de ASVs:\n")
+print(genus_asv_counts_decipher16S)
+
+abund_by_genus_decipher16S <- rowsum(t(seqtab.nochim16S), group = genus_decipher16S, reorder = FALSE)
+abund_by_genus_decipher16S <- abund_by_genus_decipher16S[order(rowSums(abund_by_genus_decipher16S), decreasing = TRUE), , drop = FALSE]
+
+write.csv(abund_by_genus_decipher16S,
+          file.path(RESULTS_ROOT, "csv/16S", "genus_abundance_decipher_16S.csv"))
+
+cat("\nListo. Resultados en:", RESULTS_ROOT, "\n")
+```
+
+Sin cambios de lógica frente a la versión anterior (tabla legible, conteo de
+ASVs por género, abundancia total por género — dos veces, una por método de
+asignación). Lo que sí cambia es qué hacer con esto a continuación: para
+`PRJNA865795`, si cargaste un CSV de metadatos en la sección 2 con tipo de
+nódulo (grande/pequeño) y etapa (R2/R4/R7), lo natural es repetir
+`abund_by_genus16S` agrupando también por esas columnas — es exactamente la
+comparación que hace Hossain et al. (2023) entre los dos tipos de nódulo.
+Para `PRJNA665712` esa comparación depende de qué metadatos termines
+confirmando para ese proyecto (y de si, según el callout de advertencia en
+"Contexto", termina haciendo falta agrupar/filtrar también por experimento).
+
+### 17. Controles de referencia (Entrez) y FASTA final junto a los FASTQ *(sección nueva)*
+
+```{r}
+#| eval: false
+# Cinco organismos de control (RefSeq) se descargan con Entrez (rentrez) y se
+# guardan como FASTA en la MISMA carpeta donde viven los FASTQ del proyecto
+# activo (path16S = raw-data/<PROJECT_ID>/fastq). Alli mismo se copia el FASTA
+# final de ASVs de la seccion 12, de modo que la carpeta fastq/ queda como el
+# unico punto de entrada para todo lo que alimentara la alineacion multiple
+# (MSA): FASTQ crudos + controles + ASVs finales.
+
+ctrl_accs16S <- c(
+  CTRL_ECOLI = "NR_114042.1",   # Escherichia coli
+  CTRL_BSUB  = "NR_112116.2",   # Bacillus subtilis
+  CTRL_PAER  = "NR_117678.1",   # Pseudomonas aeruginosa
+  CTRL_SPNE  = "NR_028665.1",   # Streptococcus pneumoniae
+  CTRL_CBUT  = "NR_113244.1"    # Clostridium butyricum
+)
+
+for (i in seq_along(ctrl_accs16S)) {
+  ctrl_fa <- rentrez::entrez_fetch(db = "nuccore", id = ctrl_accs16S[i],
+                                   rettype = "fasta", retmode = "text")
+  # Reemplazar el header de RefSeq por el id corto del control (p. ej. CTRL_ECOLI)
+  ctrl_fa <- sub("^>[^\\n]*\\n", paste0(">", names(ctrl_accs16S)[i], "\n"), ctrl_fa)
+  writeLines(ctrl_fa, file.path(path16S, paste0(names(ctrl_accs16S)[i], ".fasta")))
+  cat("Control descargado:", names(ctrl_accs16S)[i], "(", ctrl_accs16S[i], ")\n")
+}
+
+# Copiar el FASTA final de ASVs (seccion 12) a la carpeta de los FASTQ
+ctrl_fasta_copied <- file.copy(fasta_out16S,
+                               file.path(path16S, basename(fasta_out16S)),
+                               overwrite = TRUE)
+stopifnot(isTRUE(ctrl_fasta_copied))
+
+cat("\nContenido de", path16S, "relevante para el MSA:\n")
+print(list.files(path16S, pattern = "\\.fasta$", full.names = FALSE))
+```
+
+Esta sección corre **una vez por proyecto**, igual que el resto del pipeline:
+al cambiar `PROJECT_ID` (sección 1) y re-correr el documento, los cinco
+controles y el FASTA final de ASVs (`ASVs_16S_<PROJECT_ID>.fasta`, sección 12)
+aparecen en `raw-data/PRJNA665712/fastq/` y en `raw-data/PRJNA865795/fastq/`
+respectivamente — esas son las dos carpetas que indican las instrucciones del
+curso como destino de los controles junto a los FASTQ. Los FASTA de control no
+interfieren con el pipeline: la sección 3 solo lista archivos que terminan en
+`_1.fastq`/`_2.fastq`, así que un `CTRL_*.fasta` o un
+`ASVs_16S_*.fasta` extra en la carpeta no entra en `fnFs16S`/`fnRs16S`.
+`entrez_fetch()` trae la secuencia RefSeq completa del rRNA 16S de cada
+organismo; el `sub()` sobre el header cambia el identificador largo de NCBI
+(`>NR_114042.1 ...`) por el id corto de control, para que en el MSA y en
+cualquier árbol filogenético downstream se lea directamente qué organismo de
+control es cada secuencia. `rentrez` se añadió a la lista de paquetes de la
+sección 0.
+
+### 18. FASTA combinado de ambos proyectos, listo para el MSA *(sección nueva)*
+
+::: {.callout-important}
+Esta sección corre **una sola vez**, después de haber corrido las
+secciones 0–17 completas para **ambos** proyectos (`PROJECT_ID <-
+"PRJNA665712"`, y luego otra vez con `"PRJNA865795"`). No depende de
+`PROJECT_ID`/`cfg` — lee directamente los FASTA que la sección 17 ya dejó
+en cada `raw-data/<PROJECT_ID>/fastq/`. Esta sección **no** genera el
+script de alineamiento (MSA) en sí — eso queda para un documento aparte
+(`msa.qmd`); aquí solo se deja lista la entrada única que ese script va a
+consumir.
+:::
+
+```{r}
+#| eval: false
+# ASVs finales de la seccion 12, con ids ya prefijados (PRJNA665712_ASV1,
+# PRJNA665712_ASV2, ...), asi que no chocan con los ids de los controles.
+asv_fasta18 <- file.path(path16S, paste0("ASVs_16S_", PROJECT_ID, ".fasta"))
+check_path(asv_fasta18, "FASTA de ASVs")
+
+asv_combined18 <- readDNAStringSet(asv_fasta18)
+
+# Controles (seccion 17), copiados junto a los FASTQ.
+ctrl_ids18    <- c("CTRL_ECOLI", "CTRL_BSUB", "CTRL_PAER", "CTRL_SPNE", "CTRL_CBUT")
+ctrl_fastas18 <- file.path(path16S, paste0(ctrl_ids18, ".fasta"))
+
+for (f in ctrl_fastas18) {
+  check_path(f, "FASTA de control de referencia")
+}
+
+ctrl_combined18 <- do.call(c, lapply(ctrl_fastas18, readDNAStringSet))
+
+# Todo junto: ASVs de PRJNA665712 + 5 controles
+all_combined18 <- c(asv_combined18, ctrl_combined18)
+
+combined_root18 <- file.path(BASE_ROOT, "results", "combined")
+dir.create(file.path(combined_root18, "fasta/16S"), recursive = TRUE, showWarnings = FALSE)
+dir.create(file.path(combined_root18, "csv/16S"),   recursive = TRUE, showWarnings = FALSE)
+
+combined_fasta_out18 <- file.path(combined_root18, "fasta/16S", "ASVs_16S_combined.fasta")
+writeXStringSet(all_combined18, filepath = combined_fasta_out18)
+
+# Tabla puente (identica a la de la seccion 12, copiada junto al FASTA
+# combinado con el nombre que va a esperar el script de MSA).
+id_map18 <- read.csv(file.path(RESULTS_ROOT, "csv/16S",
+                                paste0("ASV_id_map_16S_", PROJECT_ID, ".csv")),
+                      stringsAsFactors = FALSE)
+write.csv(id_map18,
+          file.path(combined_root18, "csv/16S", "ASV_id_map_16S_combined.csv"),
+          row.names = FALSE)
+
+origin18 <- ifelse(grepl("^CTRL_", names(all_combined18)), "control (NCBI)", PROJECT_ID)
+
+cat("FASTA combinado escrito en:", combined_fasta_out18, "\n")
+cat("Total de secuencias:", length(all_combined18), "\n")
+print(table(origin18))
+```
+
+
+`project_ids18` fija explícitamente los dos BioProjects a combinar — si
+algún día se agrega un tercero, basta con sumarlo aquí. La sección solo
+lee lo que la sección 17 ya dejó en `fastq/`: el FASTA de ASVs de cada
+proyecto (`ASVs_16S_<PROJECT_ID>.fasta`) y una sola copia de los cinco
+controles de referencia (`CTRL_*.fasta`), evitando duplicar los controles
+en el FASTA final ya que son idénticos en ambas carpetas. `readDNAStringSet()`
+(Biostrings) lee cada FASTA como un `DNAStringSet`; `do.call(c, ...)`
+concatena la lista completa en un solo objeto sin tener que escribir
+`c(x[[1]], x[[2]])` a mano. El resultado (`all_combined18`) junta los ASVs
+de `PRJNA665712` + los de `PRJNA865795` + los 5 controles — exactamente lo
+que va a necesitar el script de alineamiento múltiple. Como los ids de ASV
+ya vienen prefijados por proyecto (sección 12) y los controles tienen sus
+propios ids cortos, no hay colisión de nombres al concatenar. El FASTA
+combinado se escribe en `results/combined/fasta/16S/ASVs_16S_combined.fasta`
+— una carpeta nueva, paralela a `results/PRJNA665712/` y
+`results/PRJNA865795/`, para una salida que ya no pertenece a un solo
+BioProject. La tabla puente combinada (`ASV_id_map_16S_combined.csv`) junta
+las dos tablas de la sección 12 con `rbind()`, conservando la trazabilidad
+completa id→secuencia para los dos proyectos en un solo archivo. El
+resumen final (`table(origin18)`) es solo una comprobación de cordura:
+debe mostrar el conteo de ASVs de cada proyecto más 5 controles.
+
+### 19. Objeto phyloseq (ASVs + taxonomía + metadata)
+
+```{r}
+#| eval: false
+library(phyloseq)
+
+ps16S_rds <- rds_file("16S", "ps16S.RDS")
+
+if (file.exists(ps16S_rds)) {
+
+  ps16S <- readRDS(ps16S_rds)
+  cat("Cargado RDS:", ps16S_rds, "\n")
+
+} else {
+
+  otu16S <- otu_table(seqtab.nochim16S, taxa_are_rows = FALSE)
+  tax16S <- tax_table(as.matrix(taxa16S))   # SILVA / assignTaxonomy (seccion 14)
+
+  if (exists("metadata16S") && !is.null(metadata16S) && "Run" %in% names(metadata16S)) {
+    meta_df <- metadata16S[metadata16S$Run %in% samples.names16S, ]
+    rownames(meta_df) <- meta_df$Run
+    sd16S <- sample_data(meta_df)
+  } else {
+    sd16S <- sample_data(data.frame(
+      Sample = samples.names16S,
+      row.names = samples.names16S
+    ))
+    cat("Aviso: sin metadata16S utilizable -- sample_data solo trae el nombre de muestra.\n",
+        "Los graficos de la seccion 20 no podran agrupar/colorear por tipo o etapa.\n")
+  }
+
+  ps16S <- phyloseq(otu16S, tax16S, sd16S)
+
+  # Guarda la secuencia completa de cada ASV como refseq antes de renombrar
+  dna16S <- Biostrings::DNAStringSet(taxa_names(ps16S))
+  names(dna16S) <- taxa_names(ps16S)
+  ps16S <- merge_phyloseq(ps16S, dna16S)
+
+  # Mismos ids que el FASTA de la seccion 12 (PROJECT_ID_ASV#)
+  taxa_names(ps16S) <- paste0(PROJECT_ID, "_ASV", seq(ntaxa(ps16S)))
+
+  saveRDS(ps16S, file = ps16S_rds)
+}
+
+ps16S
+```
+
+Si prefieres la taxonomía de DECIPHER en vez de SILVA/`assignTaxonomy`,
+cambia `tax_table(as.matrix(taxa16S))` por `tax_table(taxid16S)` (sección
+15) — noten que `taxid16S` usa nombres de rango en minúscula
+(`domain`...`species`) en vez de `Kingdom`...`Species`, así que las
+secciones 20-21 que referencian `"Phylum"`/`"Genus"` habría que ajustarlas
+a `"phylum"`/`"genus"` si haces ese cambio.
+
+### 20. Barras de abundancia relativa por Phylum y por Género
+
+Adaptado de `code.R` (bloques `Phylum.bar`/`Genus.bar`), generalizado para
+no asumir las columnas `Type`/`Stage` de ese estudio — si tu
+`metadata16S` sí trae una columna de grupo, indícala en `group_col` abajo
+para colorear el eje X; si no, se grafica sin agrupar.
+
+```{r}
+#| eval: false
+library(microbiome); library(data.table); library(ggplot2); library(scales)
+
+group_col <- NULL   # p.ej. "Type" o "NoduleSize" si tu metadata16S la trae
+
+ps16S.rel <- microbiome::transform(ps16S, "compositional")
+
+## ---- PHYLUM ----
+ps16S.Phylum.rel <- tax_glom(ps16S.rel, taxrank = "Phylum", NArm = FALSE)
+# OJO: no renombrar taxa_names() aqui -- tax_glom(NArm = FALSE) puede dejar
+# mas de un grupo con Phylum = NA (p. ej. ASVs sin phylum de linajes o
+# dominios distintos), y taxa_names<- exige valores UNICOS. La etiqueta
+# "Unclassified Phylum" se aplica despues de psmelt(), donde no hace falta
+# que sea unica.
+
+phylum.df16S <- data.table(psmelt(ps16S.Phylum.rel))
+phylum.df16S[, OTU := as.character(Phylum)]
+phylum.df16S[is.na(OTU), OTU := "Unclassified Phylum"]
+phylum.df16S[, mean_ab := mean(Abundance, na.rm = TRUE), by = "OTU"]
+phylum.df16S[mean_ab <= 0.01, OTU := "Less Abundant Phyla"]   # <1% promedio -> agrupados
+phylum.df16S <- phylum.df16S[, .(Abundance = sum(Abundance)),
+                              by = c("OTU", "Sample", if (!is.null(group_col)) group_col)]
+
+phylum.bar16S <- ggplot(phylum.df16S, aes(x = Sample, y = Abundance * 100, fill = OTU)) +
+  geom_bar(stat = "identity", position = "stack", color = "black", linewidth = 0.05, width = 1) +
+  xlab("Muestras") + ylab("Abundancia relativa de Phyla (%)") +
+  labs(fill = "Phylum") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 6)) +
+  coord_cartesian(expand = FALSE) +
+  guides(fill = guide_legend(ncol = 1)) +
+  scale_y_continuous(breaks = seq(0, 100, 5))
+
+ggsave(file.path(RESULTS_ROOT, "figures/16S", paste0("Phylum-bar-", PROJECT_ID, ".pdf")),
+       phylum.bar16S, device = "pdf", width = 297, height = 210, units = "mm")
+
+## ---- GENERO ----
+ps16S.Genus.rel <- tax_glom(ps16S.rel, taxrank = "Genus", NArm = FALSE)
+genus.df16S <- data.table(psmelt(ps16S.Genus.rel))
+
+rank_cols <- c("Kingdom","Phylum","Class","Order","Family","Genus")
+genus.df16S[, (rank_cols) := lapply(.SD, as.character), .SDcols = rank_cols]
+# Rellena NA en Genus con el nivel mas resuelto disponible + "_X"
+genus.df16S[is.na(Phylum), Phylum := paste0(Kingdom, "_X")]
+genus.df16S[is.na(Class),  Class  := paste0(Phylum, "_X")]
+genus.df16S[is.na(Order),  Order  := paste0(Class, "_X")]
+genus.df16S[is.na(Family), Family := paste0(Order, "_X")]
+genus.df16S[is.na(Genus),  Genus  := paste0(Family, "_X")]
+
+genus.df16S[, mean_ab := mean(Abundance, na.rm = TRUE), by = "Genus"]
+genus.df16S[mean_ab < 0.01, Genus := "Less Abundant Genera"]   # <1% promedio -> agrupados
+genus.df16S <- genus.df16S[, .(Abundance = sum(Abundance)),
+                            by = c("Genus", "Sample", if (!is.null(group_col)) group_col)]
+
+genus.bar16S <- ggplot(genus.df16S, aes(x = Sample, y = Abundance * 100, fill = Genus)) +
+  geom_bar(stat = "identity", position = "stack", color = "black", linewidth = 0.05, width = 1) +
+  xlab("Muestras") + ylab("Abundancia relativa de Generos (%)") +
+  labs(fill = "Genero") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 6)) +
+  coord_cartesian(expand = FALSE) +
+  guides(fill = guide_legend(ncol = 1)) +
+  scale_y_continuous(breaks = seq(0, 100, 5))
+
+ggsave(file.path(RESULTS_ROOT, "figures/16S", paste0("Genus-bar-", PROJECT_ID, ".pdf")),
+       genus.bar16S, device = "pdf", dpi = 300, width = 297, height = 210, units = "mm")
+
+write.csv(phylum.df16S, file.path(RESULTS_ROOT, "csv/16S", paste0("phylum_abundance_", PROJECT_ID, ".csv")), row.names = FALSE)
+write.csv(genus.df16S,  file.path(RESULTS_ROOT, "csv/16S", paste0("genus_abundance_", PROJECT_ID, ".csv")),  row.names = FALSE)
+```
+
+El umbral de 1% para "Less Abundant Phyla/Genera" es el mismo criterio que
+usa `code.R`; ajústalo si tu comunidad es más o menos diversa (en `code.R`
+para género usan además un criterio de abundancia máxima >5%, que puedes
+añadir con `max_ab := max(Abundance[Abundance>0])` si quieres replicarlo
+exactamente).
+
+### 21a. Grupo externo (outgroup): controles RefSeq ya descargados (sección 17)
+
+`raw-data/microorganisms9081662/` está vacía — no se usa. El grupo externo
+sale directamente de los **5 controles RefSeq** que la sección 17 ya
+descargó vía Entrez (`CTRL_ECOLI`, `CTRL_BSUB`, `CTRL_PAER`, `CTRL_SPNE`,
+`CTRL_CBUT`) y copió junto a los FASTQ de este proyecto (`path16S`). Son
+secuencias curadas de RefSeq, no lecturas crudas, así que no necesitan el
+filtrado de calidad / Cutadapt / `dada()` que sí les hace falta a los
+FASTQ del proyecto — solo se leen tal cual.
+
+```{r}
+#| eval: false
+ctrl_ids21    <- c("CTRL_ECOLI", "CTRL_BSUB", "CTRL_PAER", "CTRL_SPNE", "CTRL_CBUT")
+ctrl_fastas21 <- file.path(path16S, paste0(ctrl_ids21, ".fasta"))
+
+for (f in ctrl_fastas21) check_path(f, "FASTA de control de referencia (seccion 17)")
+
+outgroup_dna21    <- do.call(c, lapply(ctrl_fastas21, readDNAStringSet))
+outgroup_full16S  <- setNames(as.character(outgroup_dna21), names(outgroup_dna21))
+
+cat("Secuencias de grupo externo (RefSeq, 16S completo):", length(outgroup_full16S), "\n")
+cat("Largo de cada control (pb):\n"); print(nchar(outgroup_full16S))
+
+# Los controles son genes 16S COMPLETOS (~1500 pb); los ASVs de la seccion
+# 21b son amplicones V3-V4 (~250-450 pb). Alinearlos tal cual (largo
+# completo) infla el ancho del perfil en DECIPHER::AlignSeqs -- cada ASV
+# corto necesita mas de 1000 pb de gaps para calzar contra un control
+# completo -- y con muchos ASVs eso puede disparar el error "Alignment
+# larger than the maximum allowable size" durante el reagrupamiento/
+# realineamiento iterativo. Se recorta cada control a la misma region
+# V3-V4 (con los mismos cebadores FWD/REV de la seccion 4) antes de usarlo
+# como outgroup, para que todas las secuencias que entran a AlignSeqs()
+# en 21b tengan un largo comparable.
+REV.rc21 <- as.character(reverseComplement(DNAString(REV)))
+
+trim_to_amplicon <- function(seq_char) {
+  s <- DNAString(seq_char)
+  fwd_hit <- matchPattern(FWD, s, max.mismatch = 2, fixed = FALSE)
+  rev_hit <- matchPattern(REV.rc21, s, max.mismatch = 2, fixed = FALSE)
+  if (length(fwd_hit) == 0 || length(rev_hit) == 0) return(NA_character_)
+  as.character(subseq(s, start = start(fwd_hit)[1], end = end(rev_hit)[1]))
+}
+
+outgroup_trimmed21 <- vapply(outgroup_full16S, trim_to_amplicon, character(1))
+outgroup_ok21       <- !is.na(outgroup_trimmed21)
+
+if (!all(outgroup_ok21)) {
+  cat("Aviso: no se encontraron ambos primers (341F/785R) en:",
+      paste(names(outgroup_full16S)[!outgroup_ok21], collapse = ", "),
+      "-- ese/esos control(es) se excluyen del outgroup. Si son varios,",
+      "sube 'max.mismatch' en matchPattern() antes de descartarlos.\n")
+}
+
+outgroup_seqs <- setNames(outgroup_trimmed21[outgroup_ok21],
+                           names(outgroup_full16S)[outgroup_ok21])
+
+cat("Grupo externo tras recortar a V3-V4:", length(outgroup_seqs), "de",
+    length(outgroup_full16S), "controles. Largo (pb):\n")
+print(nchar(outgroup_seqs))
+```
+
+`outgroup_full16S` (16S completo, sin recortar) se conserva por si algún
+día quieres un árbol de referencia de largo completo aparte; lo que usa la
+sección 21b de aquí en adelante es `outgroup_seqs`, ya recortado. Si algún
+control queda fuera por no matchear los primers (poco probable con
+`max.mismatch = 2`, pero puede pasar por variación de cepa), el enraizado
+de la sección 21b sigue funcionando con los controles restantes gracias al
+`tryCatch()` que ya tenía esa sección.
+
+Si en algún momento sí quieres usar `microorganisms9081662/` (por ejemplo,
+si más adelante le pones archivos), esa sería una tercera fuente de
+outgroup independiente de esta — avísame y agrego esa ruta como
+alternativa, sin quitar esta.
+
+### 21b. Alineamiento múltiple y árbol filogenético enraizado con el outgroup
+
+`code.R` no construye árbol — esto sigue el enfoque estándar del
+tutorial de DADA2 (`DECIPHER::AlignSeqs` + `phangorn`: NJ inicial, luego
+ML con modelo GTR+Gamma+Inv), pero en vez de enraizar al punto medio usa el
+outgroup de la sección 21a, que es lo correcto cuando sí tienes uno.
+
+```{r}
+#| eval: false
+library(DECIPHER); library(phangorn); library(ape)
+
+tree_rds <- rds_file("16S", "fitGTR16S.RDS")
+
+# Definido ANTES del if/else (no solo dentro del else) porque el ggtitle()
+# del final de este chunk lo usa siempre, incluso cuando fitGTR16S se carga
+# del RDS cacheado y el bloque else de abajo no llega a correr.
+#
+# Con cientos o miles de ASVs, alinearlos TODOS junto con los controles
+# (aun ya recortados a V3-V4 en 21a) puede seguir disparando el ancho del
+# perfil de AlignSeqs por encima del limite de R (2^31-1 elementos), y
+# vuelve "rearrangement = stochastic" de optim.pml impracticamente lento.
+# Por eso el arbol se construye solo con los MAX_ASVS_TREE ASVs mas
+# abundantes -- sube este numero si tu maquina aguanta mas, o ponlo en
+# Inf para usarlos todos (no recomendado con miles de ASVs).
+MAX_ASVS_TREE <- 300
+
+if (file.exists(tree_rds)) {
+
+  fitGTR16S <- readRDS(tree_rds)
+  cat("Cargado RDS:", tree_rds, "\n")
+
+} else {
+
+  seqs16S_all <- getSequences(seqtab.nochim16S)
+  names(seqs16S_all) <- paste0(PROJECT_ID, "_ASV", seq_along(seqs16S_all))  # mismos ids que seccion 12
+
+  abund16S   <- colSums(seqtab.nochim16S)
+  top_idx16S <- order(abund16S, decreasing = TRUE)[seq_len(min(MAX_ASVS_TREE, length(abund16S)))]
+
+  seqs16S <- seqs16S_all[top_idx16S]  # conserva los ids originales (PROJECT_ID_ASV#) de seccion 12
+  cat("ASVs en el arbol:", length(seqs16S), "de", length(seqs16S_all),
+      "(los mas abundantes; MAX_ASVS_TREE =", MAX_ASVS_TREE, ")\n")
+
+  all_for_tree <- c(outgroup_seqs, seqs16S)  # controles (ya recortados a V3-V4 en 21a) + ASVs mas abundantes
+
+  alignment16S <- DECIPHER::AlignSeqs(
+    DNAStringSet(all_for_tree), anchor = NA, processors = NULL,
+    iterations = 0, refinements = 0  # sin refinamiento iterativo: es la fase de
+                                       # reagrupar/realinear donde el ancho del
+                                       # perfil se puede disparar; con secuencias
+                                       # ya recortadas a un largo comparable no
+                                       # deberia hacer falta para un buen alineamiento
+  )
+
+  phang.align16S <- phangorn::phyDat(as(alignment16S, "matrix"), type = "DNA")
+  dm16S     <- phangorn::dist.ml(phang.align16S)
+  treeNJ16S <- phangorn::NJ(dm16S)
+
+  fit16S    <- phangorn::pml(treeNJ16S, data = phang.align16S)
+  fitGTR16S <- update(fit16S, k = 4, inv = 0.2)
+  fitGTR16S <- phangorn::optim.pml(
+    fitGTR16S, model = "GTR", optInv = TRUE, optGamma = TRUE,
+    rearrangement = "stochastic",
+    control = phangorn::pml.control(trace = 0)
+  )
+
+  saveRDS(fitGTR16S, file = tree_rds)
+}
+
+# Enraiza con los 5 controles como outgroup. E. coli, B. subtilis,
+# P. aeruginosa, S. pneumoniae y C. butyricum NO son necesariamente un
+# grupo monofiletico entre si -- si ape::root() falla por eso, cae a
+# enraizar solo con CTRL_ECOLI.
+rooted_tree16S <- tryCatch(
+  ape::root(fitGTR16S$tree, outgroup = names(outgroup_seqs), resolve.root = TRUE),
+  error = function(e) {
+    cat("Los 5 controles no forman un grupo monofiletico en este arbol.\n",
+        "Enraizando solo con CTRL_ECOLI. Mensaje original:\n  ", conditionMessage(e), "\n")
+    ape::root(fitGTR16S$tree, outgroup = "CTRL_ECOLI", resolve.root = TRUE)
+  }
+)
+
+# Guarda el arbol COMPLETO (con los 5 controles) en Newick -- util para
+# confirmar visualmente en iTOL/FigTree que el enraizado quedo bien
+ape::write.tree(rooted_tree16S,
+                 file = file.path(RESULTS_ROOT, "fasta/16S", paste0("tree_16S_", PROJECT_ID, "_con_outgroup.nwk")))
+
+# Quita los 5 controles y deja el arbol de la comunidad, ya enraizado.
+community_tree16S <- ape::drop.tip(rooted_tree16S, names(outgroup_seqs))
+
+# OJO: el arbol solo cubre los MAX_ASVS_TREE ASVs mas abundantes (arriba),
+# no los ~seqs16S_all completos. merge_phyloseq() con un arbol de menos
+# taxa que ps16S PODA la tabla de comunidad a la interseccion -- si esto se
+# guardara sobre ps16S_rds (el mismo archivo de la seccion 19), la version
+# completa de TODOS los ASVs se perderia silenciosamente. Por eso el
+# objeto con arbol se guarda APARTE: ps16S.RDS (seccion 19) sigue teniendo
+# todos los ASVs, sin arbol; ps16S_tree.RDS tiene solo los ASVs del arbol,
+# con arbol. Usa ps16S para diversidad/composicion sobre toda la comunidad,
+# y ps16S_tree para lo que dependa del arbol (p. ej. UniFrac).
+ps16S_tree_rds <- rds_file("16S", "ps16S_tree.RDS")
+ps16S_tree     <- merge_phyloseq(ps16S, phy_tree(community_tree16S))
+saveRDS(ps16S_tree, file = ps16S_tree_rds)
+
+ape::write.tree(phy_tree(ps16S_tree),
+                 file = file.path(RESULTS_ROOT, "fasta/16S", paste0("tree_16S_", PROJECT_ID, ".nwk")))
+
+# Vista rapida dentro de R
+plot_tree(ps16S_tree, label.tips = "taxa_names", ladderize = "left",
+          size = "abundance", plot.margin = 0.5) +
+  ggtitle(paste("Arbol filogenetico (enraizado con outgroup, top", MAX_ASVS_TREE, "ASVs) -", PROJECT_ID))
+```
+
+`optim.pml` con `rearrangement = "stochastic"` puede tardar bastante incluso
+con `MAX_ASVS_TREE` ASVs de por medio — si sigue siendo lento, baja
+`MAX_ASVS_TREE` o cambia `rearrangement` a `"NNI"` (más rápido, menos
+exhaustivo). Los controles (recortados a V3-V4 en 21a) entran al
+alineamiento y al árbol ML igual que cualquier ASV; solo se retiran
+**después** de enraizar (`ape::drop.tip`), así que no aparecen en
+`ps16S_tree` ni en los gráficos de la sección 20 (que de todas formas usan
+el `ps16S` completo de la sección 19, no `ps16S_tree`).
+
+## Correcciones aplicadas en esta ronda
+
+| Problema encontrado | Corrección |
+|---|---|
+| `PRJEB74143` ya no existe en la estructura de carpetas del curso 2551 | Los dos BioProjects se combinan en este mismo documento como `PRJNA665712` + `PRJNA865795` (sección 1), con sus carpetas `raw-data/PRJNA665712/` y `results/PRJNA665712/` |
+| El documento anterior asumía un solo BioProject (`PRJNA665712`) con rutas fijas | `PROJECT_ID` + lista `PROJECTS` (sección 1): un solo documento corre contra cualquiera de los dos BioProjects sin editar el resto de las secciones |
+| Rutas apuntaban a `raw-data/bioinformatics/.../practice-7/...` (estructura del proyecto anterior) | Reescritas a la estructura plana de 2551: `raw-data/<PROJECT_ID>/` y `results/<PROJECT_ID>/` |
+| La sección 3 filtraba FASTQ contra `metadata$Run` asumiendo un BioProject con varios experimentos mezclados | Filtro quitado por defecto (sin evidencia de mezcla en estos dos proyectos); metadata ahora es opcional (sección 2) y el filtro queda comentado como plantilla |
+| Los ids de ASV (`ASV1`, `ASV2`...) y el nombre del FASTA de salida eran genéricos | Sección 12: ids y nombre de archivo ahora incluyen `PROJECT_ID`, para poder combinar los FASTA de ambos proyectos sin colisión de nombres antes del MSA |
+| `REF_ROOT` vivía dentro de la carpeta `raw-data` de un solo proyecto | Movido a una ubicación compartida (`software/silva-decipher/`), ya que SILVA/DECIPHER no son específicos de un BioProject |
+| El respaldo de `cutadapt` (sección 1) tenía escrito a mano un usuario de Windows fijo, causando error de `check_path()` ("Cutadapt executable not found") | Reescrito con `file.path(Sys.getenv("USERPROFILE"), "anaconda3", "Scripts", "cutadapt.exe")`, dinámico: resuelve automáticamente a la cuenta activa (confirmada: `C:/Users/computationalbiology`) sin requerir edición manual |
+| `BASE_ROOT` apuntaba a `C:/Users/notes/Documents/school/2551` — esa cuenta/ruta no existe en el equipo del curso; el error real de `prefetch.exe not found` al correr los scripts bash confirmó que todo (scripts, software, raw-data, results) vive bajo la cuenta `computationalbiology`, en `Videos/school/`, no dividido entre dos usuarios | `BASE_ROOT <- "C:/Users/computationalbiology/Videos/school"`, consistente con `SCHOOL_ROOT` de `bash-PRJNA665712.sh` / `bash-PRJNA865795.sh` |
+| Los dos FASTA finales de ASVs (`results/<PROJECT_ID>/fasta/16S/ASVs_16S_<PROJECT_ID>.fasta`) quedaban listos para combinarse pero la combinación en sí era solo un paso descrito en "Próximos pasos", no código | Sección 18 (nueva): lee los dos FASTA de ASVs + los 5 controles ya copiados a `fastq/` por la sección 17, y escribe un único FASTA combinado en `results/combined/fasta/16S/ASVs_16S_combined.fasta`, listo como entrada del script de alineamiento (MSA) que se entrega por separado |
+| Cebadores y parámetros de recorte (`truncLen`) estaban escritos a mano dentro de las secciones 4 y 8 | Centralizados en `cfg` (sección 1), con valores distintos por proyecto — informados por la metodología publicada para `PRJNA865795`; para `PRJNA665712` los cebadores (341F/785R, V3-V4) ya vienen confirmados por protocolo, aunque `truncLen` sigue como punto de partida pendiente de ajustar contra los perfiles de calidad propios (sección 7) |
+| `REF_ROOT` (sección 1) seguía apuntando a `raw-data/silva/` — la ruta antigua por proyecto, que ya no existe bajo la estructura plana de 2551 (`raw-data/<PROJECT_ID>/{fasta,srr,sra,fastq}` no incluye `silva/`) — pese a que el resto del documento (callout de "Estructura de rutas", prosa de la sección 1, y esta misma tabla) ya describía `REF_ROOT` como movido a la ubicación compartida | Corregido a `file.path(BASE_ROOT, "software", "silva-decipher")`, consistente con el árbol de carpetas documentado y con `check_path(REF_ROOT, ...)` de la sección 1 |
+| La prosa/callouts de este documento describían `REF_ROOT` como movido a `software/silva-decipher/`, pero el código de la sección 1 ya usaba `raw-data/silva/` — inconsistencia solo de texto, no de código | Prosa y callouts corregidos para reflejar `raw-data/silva/`, confirmado como la ubicación real y compartida entre proyectos |
+| El pipeline llegaba hasta la taxonomía (sección 16) pero no construía el objeto `phyloseq`, ni las gráficas de barras por Phylum/Género de `code.R`, ni un árbol filogenético | Secciones nuevas: 19 (objeto `phyloseq`), 20 (barras de abundancia relativa por Phylum y Género, adaptadas de `code.R`), 21a (grupo externo = los 5 controles RefSeq ya descargados vía Entrez en la sección 17, no `raw-data/microorganisms9081662/`, que está vacía) y 21b (alineamiento DECIPHER + árbol ML con `phangorn`, enraizado con esos 5 controles) |
+| Entre las secciones 15 y 16 había un chunk de código huérfano (sin encabezado de sección, sin prosa, y el único del documento sin `#\| eval: false`) que redefinía `load_all_rds()` con una firma distinta (`function(rds_dir)`, argumento obligatorio) a la ya definida en la sección 1 (`function(verbose = TRUE)`, sin argumento obligatorio, con manejo especial de `cut.16S.RDS`) — al correr el documento en orden, esta segunda definición sobrescribía silenciosamente la de la sección 1 y rompía la forma de uso descrita en "Objetivo" (`load_all_rds()` sin argumentos) | Chunk duplicado eliminado; `load_all_rds()` vuelve a ser una sola definición, la de la sección 1 |
+| `DECIPHER::AlignSeqs()` en la sección 21b truena para `PRJNA665712` con `Alignment larger (3,968,079,097) than the maximum allowable size (2,147,483,647)` durante el refinamiento iterativo — confirmado con datos reales: los 3,217 ASVs tienen largos homogéneos (240-388 pb, sin bimodalidad), así que no es la mezcla de 3 experimentos, sino simplemente alinear miles de ASVs cortos junto con 5 controles de 16S **completo** (~1,500 pb) | Sección 21a: los controles se recortan a la región V3-V4 (mismos cebadores `FWD`/`REV`) antes de usarse como outgroup. Sección 21b: el árbol se construye solo con los `MAX_ASVS_TREE` (300 por defecto) ASVs más abundantes, y `AlignSeqs()` corre con `iterations = 0, refinements = 0` como red de seguridad adicional |
+| Con la nueva poda a `MAX_ASVS_TREE` ASVs, `merge_phyloseq(ps16S, phy_tree(...))` en la sección 21b recortaría `ps16S` a solo esos ASVs y, al guardarse en el mismo `ps16S_rds` de la sección 19, borraría silenciosamente la tabla de comunidad completa | El objeto con árbol se guarda aparte, en `ps16S_tree.RDS` (`ps16S_tree`); `ps16S.RDS` (sección 19) sigue intacto con todos los ASVs y sin árbol |
+| El callout de "Contexto" decía que `SraRunTable-117.csv` debía estar en `raw-data/PRJNA665712/srr/`, pero el código real (`metaPath` en la sección 1) lo busca en `raw-data/PRJNA665712/csv/` — inconsistencia solo de texto, no de código (mismo patrón que ya pasó antes con `REF_ROOT`) | Callout corregido para decir `csv/`, que es la ruta que de verdad usa `metaPath`; confirma que el archivo esté ahí físicamente o la sección 2 falla con `stop()` |
+
+## Ubicación de los archivos
+
+- Script: `scripts/R/dada2.R`
+- Este documento: `scripts/qmd/dada2.qmd`
+- `BASE_ROOT`: `C:/Users/computationalbiology/Videos/school`
+- Entradas: `raw-data/PRJNA665712/{fastq,srr}` y `raw-data/PRJNA865795/{fastq,srr}`
+- Controles y FASTA final por proyecto (sección 17): `raw-data/PRJNA665712/fastq/{CTRL_ECOLI,CTRL_BSUB,CTRL_PAER,CTRL_SPNE,CTRL_CBUT}.fasta` + `ASVs_16S_PRJNA665712.fasta`, y los mismos cinco controles + `ASVs_16S_PRJNA865795.fasta` en `raw-data/PRJNA865795/fastq/`
+- Salidas por proyecto: `results/PRJNA665712/{csv,rds,phred,figures,fasta,pdf}` y `results/PRJNA865795/{csv,rds,phred,figures,fasta,pdf}`
+- **FASTA combinado para el MSA (sección 18):** `results/combined/fasta/16S/ASVs_16S_combined.fasta` + `results/combined/csv/16S/ASV_id_map_16S_combined.csv`
+- **Objeto phyloseq por proyecto (sección 19):** `results/<PROJECT_ID>/rds/16S/ps16S.RDS` (todos los ASVs, sin árbol)
+- **Objeto phyloseq con árbol (sección 21b):** `results/<PROJECT_ID>/rds/16S/ps16S_tree.RDS` (solo los `MAX_ASVS_TREE` ASVs más abundantes, con árbol filogenético — separado de `ps16S.RDS` para no podar la tabla de comunidad completa)
+- **Barras de abundancia por Phylum/Género (sección 20):** `results/<PROJECT_ID>/figures/16S/{Phylum,Genus}-bar-<PROJECT_ID>.pdf` + los CSV de abundancia correspondientes en `csv/16S/`
+- **Grupo externo / outgroup (sección 21a):** no genera archivos nuevos — reusa los 5 `CTRL_*.fasta` que la sección 17 ya deja en `raw-data/<PROJECT_ID>/fastq/`
+- **Árbol filogenético enraizado (sección 21b):** `results/<PROJECT_ID>/fasta/16S/tree_16S_<PROJECT_ID>_con_outgroup.nwk` (árbol completo, con los controles, para revisar el enraizado) y `tree_16S_<PROJECT_ID>.nwk` (árbol final de la comunidad, ya incorporado a `ps16S_tree.RDS` — no a `ps16S.RDS`, ver arriba)
+
+## Próximos pasos
+
+- Confirmar organismo, plataforma y número de muestras de `PRJNA665712` —
+  los cebadores (341F/785R, V3-V4, PCR de doble paso) ya están confirmados
+  por protocolo (ver Contexto), pero esos otros datos siguen pendientes. Si
+  tienes su `SraRunTable` o cualquier descripción, la sección "Contexto" y
+  `cfg$descripcion` (sección 1) se pueden actualizar con datos reales.
+- **Confirmar si `PRJNA665712` mezcla más de un experimento** (ver el
+  callout de advertencia en "Contexto"): una versión anterior de este
+  documento lo describía con 117 corridas de tres experimentos distintos,
+  filtradas contra `SraRunTable-117.csv`. Si aplica a la corrida activa,
+  reactivar el filtro comentado en la sección 3 antes de correr el resto
+  del pipeline — de lo contrario el `seqtab.nochim16S` mezclaría corridas
+  no comparables.
+- Revisar los perfiles de calidad de **cada proyecto por separado**
+  (`phred/<PROJECT_ID>/16S/*.pdf`) y ajustar `trimLeft`/`truncLen` en la
+  lista `PROJECTS` de la sección 1 si la calidad cae antes o después de lo
+  asumido.
+- Correr el documento completo dos veces — `PROJECT_ID <- "PRJNA665712"`,
+  luego `"PRJNA865795"` — para generar ambos
+  `results/<PROJECT_ID>/fasta/16S/ASVs_16S_<PROJECT_ID>.fasta`. La sección 17
+  escribe además, en cada una de esas dos corridas, los cinco controles de
+  referencia y el FASTA final de ASVs dentro de
+  `raw-data/<PROJECT_ID>/fastq/` (`PRJNA665712\fastq` y
+  `PRJNA865795\fastq`).
+- Después de correr ambos proyectos, correr la sección 18 **una sola vez**
+  para generar `results/combined/fasta/16S/ASVs_16S_combined.fasta` — el
+  FASTA único (ASVs de los dos proyectos + los 5 controles) que va a
+  alimentar el alineamiento múltiple.
+- **Pendiente, aparte de este documento:** el script de alineamiento (MSA)
+  en sí, que va a tomar `ASVs_16S_combined.fasta` como entrada. Todavía no
+  se genera en esta ronda.
+- Confirmar que la sección 17 corrió con éxito para el `PROJECT_ID` activo
+  (los 5 `CTRL_*.fasta` deben existir en `raw-data/<PROJECT_ID>/fastq/`)
+  antes de correr la sección 21a, que los usa como grupo externo.
+- Correr las secciones 19, 20, 21a y 21b **por cada `PROJECT_ID`** (a
+  diferencia de una versión anterior de este documento, el outgroup ya no
+  es un cálculo compartido entre proyectos -- se lee directo de los
+  controles de cada proyecto).
+- Si `ape::root()` en la sección 21b cae al respaldo (`CTRL_ECOLI` solo)
+  porque los 5 controles no forman un grupo monofilético en tu árbol,
+  revisa el Newick con outgroup (`tree_16S_<PROJECT_ID>_con_outgroup.nwk`)
+  para confirmar que el enraizado final tiene sentido biológico.
+
+## Referencias
+
+Callahan, B. J., et al. (2016). *DADA2: High-resolution sample inference
+from Illumina amplicon data*. Nature Methods, 13(7), 581–583.
+
+Hossain, M. S., DeLaune, P. B., & Gentry, T. J. (2023). *Microbiome
+analysis revealed distinct microbial communities occupying different sized
+nodules in field-grown peanut*. Frontiers in Microbiology, 14, 1075575.
+
+Klindworth, A., et al. (2013). *Evaluation of general 16S ribosomal RNA
+gene PCR primers for classical and next-generation sequencing-based
+diversity studies*. Nucleic Acids Research, 41(1), e1.
+
+Martin, M. (2011). *Cutadapt removes adapter sequences from high-throughput
+sequencing reads*. EMBnet.journal, 17(1), 10–12.
