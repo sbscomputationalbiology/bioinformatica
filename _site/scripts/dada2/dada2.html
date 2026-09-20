@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>dada2 – bioinformatica</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-b9578401468eb27c1d61b32f13c6d5a5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">bioinformatica</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#forward-and-reverse-fastq-filenames-have-format-samplename_r1_001.fastq-and-samplename_r2_001.fastq" id="toc-forward-and-reverse-fastq-filenames-have-format-samplename_r1_001.fastq-and-samplename_r2_001.fastq" class="nav-link active" data-scroll-target="#forward-and-reverse-fastq-filenames-have-format-samplename_r1_001.fastq-and-samplename_r2_001.fastq">Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq and SAMPLENAME_R2_001.fastq</a></li>
+  <li><a href="#extract-sample-names-assuming-filenames-have-format-samplename_xxx.fastq" id="toc-extract-sample-names-assuming-filenames-have-format-samplename_xxx.fastq" class="nav-link" data-scroll-target="#extract-sample-names-assuming-filenames-have-format-samplename_xxx.fastq">Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq</a></li>
+  <li><a href="#place-filtered-files-in-filtered-subdirectory" id="toc-place-filtered-files-in-filtered-subdirectory" class="nav-link" data-scroll-target="#place-filtered-files-in-filtered-subdirectory">Place filtered files in filtered/ subdirectory</a></li>
+  <li><a href="#assign-taxonomy-using-different-database" id="toc-assign-taxonomy-using-different-database" class="nav-link" data-scroll-target="#assign-taxonomy-using-different-database">Assign taxonomy using different database</a></li>
+  <li><a href="#change-name-of-taxa-less-than-1" id="toc-change-name-of-taxa-less-than-1" class="nav-link" data-scroll-target="#change-name-of-taxa-less-than-1">Change name of taxa less than 1%</a></li>
+  <li><a href="#change-name-of-taxa-less-than-1-storing-the-names-in-new-column" id="toc-change-name-of-taxa-less-than-1-storing-the-names-in-new-column" class="nav-link" data-scroll-target="#change-name-of-taxa-less-than-1-storing-the-names-in-new-column">Change name of taxa less than 1%, storing the names in new column</a></li>
+  <li><a href="#label.t---paste0comp1-vs-comp2-number-of-asvs-nrowres_sig" id="toc-label.t---paste0comp1-vs-comp2-number-of-asvs-nrowres_sig" class="nav-link" data-scroll-target="#label.t---paste0comp1-vs-comp2-number-of-asvs-nrowres_sig">label.t &lt;- paste0(comp1, ” vs “, comp2,” (Number of ASVs = “, nrow(res_sig),”)“)</a></li>
+  <li><a href="#list.name---pastecomp1comp2-sep-_" id="toc-list.name---pastecomp1comp2-sep-_" class="nav-link" data-scroll-target="#list.name---pastecomp1comp2-sep-_">list.name &lt;- paste(comp1,comp2, sep = “_“)</a></li>
+  <li><a href="#description.deseqlist.name---ggplotres_sig-aesxphylum-ylog2foldchange-colorphylum-geom_hlineyintercept-c10-10-geom_jittersize3-width-0.2-themeaxis.text.x-element_textangle--90-hjust-0-vjust0.5-themelegend.position-none-ggtitlelabel-label.t-geom_text_repelaeslabelifelselog2foldchange-10-log2foldchange--10ifelsetest-is.nagenus-as.characterpastefamily_x-sep-as.charactergenus-hjust0vjust0" id="toc-description.deseqlist.name---ggplotres_sig-aesxphylum-ylog2foldchange-colorphylum-geom_hlineyintercept-c10-10-geom_jittersize3-width-0.2-themeaxis.text.x-element_textangle--90-hjust-0-vjust0.5-themelegend.position-none-ggtitlelabel-label.t-geom_text_repelaeslabelifelselog2foldchange-10-log2foldchange--10ifelsetest-is.nagenus-as.characterpastefamily_x-sep-as.charactergenus-hjust0vjust0" class="nav-link" data-scroll-target="#description.deseqlist.name---ggplotres_sig-aesxphylum-ylog2foldchange-colorphylum-geom_hlineyintercept-c10-10-geom_jittersize3-width-0.2-themeaxis.text.x-element_textangle--90-hjust-0-vjust0.5-themelegend.position-none-ggtitlelabel-label.t-geom_text_repelaeslabelifelselog2foldchange-10-log2foldchange--10ifelsetest-is.nagenus-as.characterpastefamily_x-sep-as.charactergenus-hjust0vjust0">description.deseq[[list.name]] &lt;- ggplot(res_sig, aes(x=Phylum, y=log2FoldChange, color=Phylum)) + geom_hline(yintercept = c(10,-10)) + geom_jitter(size=3, width = 0.2) + theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5)) + theme(legend.position = “none”) + ggtitle(label = label.t) + geom_text_repel(aes(label=ifelse(log2FoldChange &gt;= 10 | log2FoldChange &lt;= -10,ifelse(test = (is.na(Genus)), as.character(paste(Family,“_X”, sep = ““)), as.character(Genus) ),’’)),hjust=0,vjust=0)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<p>library(dada2); packageVersion(“dada2”) set.seed(100)</p>
+<p>#saving plots. width and height variables storing mm length of A4 landscape page to be used throughout width = 297 height = 210</p>
+<p>path &lt;- “/data1/ankit/16s/run1” # CHANGE ME to the directory containing the fastq files after unzipping. list.files(path)</p>
+<section id="forward-and-reverse-fastq-filenames-have-format-samplename_r1_001.fastq-and-samplename_r2_001.fastq" class="level1">
+<h1>Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq and SAMPLENAME_R2_001.fastq</h1>
+<p>fnFs &lt;- sort(list.files(path, pattern=“_R1.fastq”, full.names = TRUE)) fnRs &lt;- sort(list.files(path, pattern=“_R2.fastq”, full.names = TRUE))</p>
+</section>
+<section id="extract-sample-names-assuming-filenames-have-format-samplename_xxx.fastq" class="level1">
+<h1>Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq</h1>
+<p>sample.names &lt;- sapply(strsplit(basename(fnFs), “_“), <code>[</code>, 1)</p>
+</section>
+<section id="place-filtered-files-in-filtered-subdirectory" class="level1">
+<h1>Place filtered files in filtered/ subdirectory</h1>
+<p>filtFs &lt;- file.path(path, “filtered”, paste0(sample.names, “_F_filt.fastq.gz”)) filtRs &lt;- file.path(path, “filtered”, paste0(sample.names, “_R_filt.fastq.gz”)) names(filtFs) &lt;- sample.names names(filtRs) &lt;- sample.names</p>
+<p>plotQualityProfile(fnFs[1:10]) plotQualityProfile(fnRs[1:10])</p>
+<p>#trimming was done to remove 2 nucleotide in R1 and 11 in R2 reads. Further, primer sequences were removed by triming 17 in R1 and 21 in R2 reads. out &lt;- filterAndTrim(fnFs, filtFs, fnRs, filtRs, maxN=0, rm.phix=TRUE, maxEE = 2, truncLen = c(249,240), trimLeft = c(17,21), compress=TRUE, multithread=TRUE) # On Windows set multithread=FALSE</p>
+<p>plotQualityProfile(filtFs[1:10]) plotQualityProfile(filtRs[1:10])</p>
+<p>#learn error rates errF &lt;- learnErrors(filtFs, multithread = TRUE) errR &lt;- learnErrors(filtRs, multithread = TRUE)</p>
+<p>plotErrors(errF, nominalQ=TRUE) plotErrors(errR, nominalQ=TRUE)</p>
+<p>#denoise data dadaFs &lt;- dada(filtFs, err=errF, multithread = TRUE) dadaRs &lt;- dada(filtRs, err=errR, multithread = TRUE)</p>
+<p>#merge pairs and extract sequences with merged length in range 400-430 mergers &lt;- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE) seqtab &lt;- makeSequenceTable(mergers) table(nchar(getSequences(seqtab))) seqtab2 &lt;- seqtab[,nchar(colnames(seqtab)) %in% 400:430] table(nchar(getSequences(seqtab2))) hist(nchar(getSequences(seqtab2)), main = “Histogram of merged read length distribution”, xlab = “Length”, ylab = “Number of reads”, col = “skyblue1”)</p>
+<p>#remove bimeras seqtab.nochim &lt;- removeBimeraDenovo(seqtab2, method=“consensus”, multithread=TRUE, verbose=TRUE) sum(seqtab.nochim)/sum(seqtab2)</p>
+<p>#track reads through steps getN &lt;- function(x) sum(getUniques(x)) track &lt;- cbind(out, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim)) colnames(track) &lt;- c(“input”, “filtered”, “denoisedF”, “denoisedR”, “merged”, “nonchim”) rownames(track) &lt;- sample.names View(track) write.table(x = track, file = “reads-stats.txt”, sep = “, quote = FALSE)</p>
+<p>saveRDS(seqtab.nochim, “16sall.rds”) save.image(“16s.RData”)</p>
+</section>
+<section id="assign-taxonomy-using-different-database" class="level1">
+<h1>Assign taxonomy using different database</h1>
+<p>taxSilva &lt;- assignTaxonomy(seqtab.nochim, “/data1/ankit/16s/DADA2-db/silva_nr_v132_train_set.fa”, multithread=TRUE, minBoot = 80, tryRC=TRUE) saveRDS(taxSilva, “/data1/ankit/16s/taxSilva.rds”) taxRdp &lt;- assignTaxonomy(seqtab.nochim, “/data1/ankit/16s/DADA2-db/rdp_train_set_16.fa”, multithread=TRUE, minBoot = 80, tryRC=TRUE) saveRDS(taxRdp, “/data1/ankit/16s/taxRdp.rds”) taxRefseqRdp &lt;- assignTaxonomy(seqtab.nochim, “/data1/ankit/16s/DADA2-db/RefSeq-RDP16S_v3_May2018.fa”, multithread=TRUE, minBoot = 80, tryRC=TRUE) saveRDS(taxRefseqRdp, “/data1/ankit/16s/taxRefseqRdp.rds”) taxGTDB86 &lt;- assignTaxonomy(seqtab.nochim, “/data1/ankit/16s/DADA2-db/GTDB_bac-arc_ssu_r86.fa”, multithread=TRUE, minBoot = 80, tryRC=TRUE) saveRDS(taxGTDB86, “/data1/ankit/16s/taxGTDB86.rds”) taxGTDB89 &lt;- assignTaxonomy(seqtab.nochim, “/data1/ankit/16s/DADA2-db/GTDB_bac120_arc122_ssu_r89.fa”, multithread=TRUE, minBoot = 80, tryRC=TRUE) saveRDS(taxGTDB89, “/data1/ankit/16s/taxGTDB89.rds”)</p>
+<p>#ADD SPECIES infomration using same database speciesSilva &lt;- addSpecies(taxSilva, “/data1/ankit/16s/DADA2-db/silva_species_assignment_v132.fa.gz”, tryRC = TRUE, n = 10000) saveRDS(speciesSilva, “/data1/ankit/16s/speciesSilva.rds”) speciesRdp &lt;- addSpecies(taxRdp, “/data1/ankit/16s/DADA2-db/rdp_species_assignment_16.fa.gz”, tryRC = TRUE, n = 10000) saveRDS(speciesRdp, “/data1/ankit/16s/speciesRdp.rds”) speciesRefseqRdp &lt;- addSpecies(taxRefseqRdp, “/data1/ankit/16s/DADA2-db/RefSeq-RDP_dada2_assignment_species.fa.gz”, tryRC = TRUE, n = 10000) saveRDS(speciesRefseqRdp, “/data1/ankit/16s/speciesRefseqRdp.rds”) speciesGTDB86 &lt;- addSpecies(taxGTDB86, “/data1/ankit/16s/DADA2-db/GTDB_dada2_assignment_species.fa.gz”, tryRC = TRUE, n = 10000) saveRDS(speciesGTDB86, “/data1/ankit/16s/speciesGTDB86.rds”) speciesGTDB89 &lt;- addSpecies(taxGTDB89, “/data1/ankit/16s/DADA2-db/GTDB_dada2_assignment_species.fa”, tryRC = TRUE, n = 10000) saveRDS(speciesGTDB89, “/data1/ankit/16s/speciesGTDB89.rds”)</p>
+<p>write.table(taxGTDB86, file = “taxGTDB86.tsv”, sep = “) write.table(taxGTDB89, file =”taxGTDB89.tsv”, sep = “) write.table(taxRdp, file =”taxRdp.tsv”, sep = “) write.table(taxRefseqRdp, file =”taxRefseqRdp.tsv”, sep = “) write.table(taxSilva, file =”taxSilva.tsv”, sep = “) write.table(speciesGTDB86, file =”speciesGTDB86.tsv”, sep = “) write.table(speciesGTDB89, file =”speciesGTDB89.tsv”, sep = “) write.table(speciesRdp, file =”speciesRdp.tsv”, sep = “) write.table(speciesRefseqRdp, file =”speciesRefseqRdp.tsv”, sep = “) write.table(speciesSilva, file =”speciesSilva.tsv”, sep = “)</p>
+<p>#summarise assignments for all database at each taxonomic levels and plot them Silva &lt;- apply(speciesSilva, 2, function(x) length(which(!is.na(x)))) Rdp &lt;- apply(speciesRdp, 2, function(x) length(which(!is.na(x)))) RefseqRdp &lt;- apply(speciesRefseqRdp, 2, function(x) length(which(!is.na(x)))) GTDB86 &lt;- apply(speciesGTDB86, 2, function(x) length(which(!is.na(x)))) GTDB89 &lt;- apply(speciesGTDB89, 2, function(x) length(which(!is.na(x)))) read.counts &lt;- as.data.frame(rbind(Silva, Rdp, RefseqRdp, GTDB86, GTDB89)) read.counts$Database &lt;- row.names(read.counts) read.counts &lt;- reshape2::melt(data = read.counts, id = “Database”) dbplot &lt;- ggplot(read.counts,aes(x=Database,y=value,fill=variable)) + geom_bar(stat=“identity”,position = “identity”, alpha = 0.8) + scale_y_log10() + labs(fill = “Taxonomy assignment level”, y = “Reads assigned”) + annotation_logticks(sides = “lr”) + theme(legend.position = “bottom”) + theme_classic() + scale_fill_brewer(palette = “Dark2”) ggpubr::ggsave(filename = “database-assignment.pdf”, plot = dbplot, device = “pdf”, width = height, height = width, units = “mm”) #</p>
+<p>###metadata comparison#### #read metadata information file containing information of groups and environmental parameters. Also compare all parameters across groups. sample.data &lt;- read.delim(“sample-data.txt”) rownames(sample.data) = sample.data<span class="math inline">\(Names
+sample.data\)</span>Stage &lt;- factor(x = sample.data<span class="math inline">\(Stage, levels = c("PreSowing", "Seedling", "PreNodulating", "Nodulating", "Flowering", "Matured", "PostHarvest"), ordered = TRUE)
+sample.data\)</span>Type &lt;- factor(x = sample.data$Type, levels = c(“PreSowing”, “Bulk”, “Rhizosphere”, “PostHarvest”), ordered = TRUE)</p>
+<p>all.kruskal &lt;- ggpubr::compare_means(formula = c(pH, EC, OC, P2O5, K2O, S, Mn, Cu, Fe, Zn) ~ Type, data = sample.data, method = “kruskal.test”, p.adjust.method = “BH”) BR.wilcox &lt;- ggpubr::compare_means(formula = c(pH, EC, OC, P2O5, K2O, S, Mn, Cu, Fe, Zn) ~ Type, data = sample.data[sample.data<span class="math inline">\(Type %in% c("Bulk", "Rhizosphere"), ], method = "wilcox.test", p.adjust.method = "BH", paired = TRUE)
+rhizosphere.kruskal &lt;- ggpubr::compare_means(formula = c(pH, EC, OC, P2O5, K2O, S, Mn, Cu, Fe, Zn) ~ Stage, data = sample.data[sample.data\)</span>Type == “Rhizosphere”,], method = “kruskal.test”, p.adjust.method = “BH”) bulk.kruskal &lt;- ggpubr::compare_means(formula = c(pH, EC, OC, P2O5, K2O, S, Mn, Cu, Fe, Zn) ~ Stage, data = sample.data[sample.data$Type == “Bulk”,], method = “kruskal.test”, p.adjust.method = “BH”)</p>
+<p>write.table(x = all.kruskal, file = “Type-comparison-metadata.txt”, sep = “, row.names = FALSE, col.names = TRUE, quote = FALSE) write.table(x = BR.wilcox, file =”BR-comparison-metadata.txt”, sep = “, row.names = FALSE, col.names = TRUE, quote = FALSE) write.table(x = rhizosphere.kruskal, file =”Rhizosphere-stage-comparison-metadata.txt”, sep = “, row.names = FALSE, col.names = TRUE, quote = FALSE) write.table(x = bulk.kruskal, file =”Bulk-stage-comparison-metadata.txt”, sep = “, row.names = FALSE, col.names = TRUE, quote = FALSE) #</p>
+<p>library(phyloseq) library(microbiome) library(ggplot2) library(ggpubr) library(data.table) library(randomcoloR) library(tidyr) library(scales) library(vegan) library(ggConvexHull) library(grid) library(RColorBrewer) library(ggnewscale) library(dplyr) library(plyr) library(pairwiseAdonis) library(DESeq2) library(ggrepel) library(corrplot) library(ape) library(gridExtra) library(stringr) library(UpSetR) library(viridis) library(ComplexHeatmap)</p>
+<p>#create phyloseq object with metadata information and taxonomy from GTDB ps &lt;- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), sample_data(sample.data), tax_table(speciesGTDB89))</p>
+<p>#renaming sequence as ASV names to something more comfortable. “ASV” as prefix followed by numbers. dna &lt;- Biostrings::DNAStringSet(taxa_names(ps)) names(dna) &lt;- taxa_names(ps) ps &lt;- merge_phyloseq(ps, dna) taxa_names(ps) &lt;- paste0(“ASV”, seq(ntaxa(ps))) saveRDS(object = ps, file = “ps.RDS”)</p>
+<p>#to check distribution of reads per sample and counts per ASVs. This will be used to determine further filters. sort(sample_sums(ps)) table(taxa_sums(ps)) ls &lt;- seq(0, 8500, by = 5000) #c(0, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000, 75000, 80000, 85000) hist(sample_sums(ps), main = “Histogram: Read Counts”, xlab = “Total Reads”, border = “blue”, col = c(“blue”, “blue”, rep(“green”, 15)), breaks = ls, freq = TRUE, ylab = “Frequency of samples”)</p>
+<p>#removing ASVs with toal count less than 6 ps1 &lt;- prune_taxa(taxa_sums(ps) &gt; 5, ps) ps1 #removing samples with read counts less than 10000. This will be the final object analysed throughout. ps2 &lt;- prune_samples(sample_sums(ps1) &gt; 10000, ps1) ps2 saveRDS(object = ps2, file = “ps2.RDS”)</p>
+<p>#create a object with relative abundance and subset with Rhizosphere samples only. This is done for simplicity when required. ps2.rel &lt;- microbiome::transform(ps2, “compositional”) Rhizosphereps2 &lt;- subset_samples(ps2, Type == “Rhizosphere”) Rhizosphereps2.rel &lt;- microbiome::transform(Rhizosphereps2, “compositional”)</p>
+<p>#########ALPHA DIVERSITY #create a metadata data frame to add diversity values. metadata &lt;- data.frame(sample_data(ps2)) #calculating diversity div &lt;- microbiome::alpha(x = ps2, index = “all”) metadata<span class="math inline">\(ShannonDiversity = div\)</span>diversity_shannon metadata<span class="math inline">\(ObservedASV = div\)</span>observed #storing list to be used in plots comparisonsList = list( c(“Presowing”, “Rhizosphere1”), c(“Rhizosphere1”,“Rhizosphere2”), c(“Rhizosphere2”, “Rhizosphere3”), c(“Rhizosphere3”, “Rhizosphere4”), c(“Rhizosphere4”, “Rhizosphere5”), c(“Rhizosphere5”,“Rhizosphere6”), c(“Rhizosphere6”,“Rhizosphere7”), c(“Rhizosphere7”, “Rhizosphere8”), c(“Rhizosphere8”,“Postharvest”), c(“Presowing”,“Bulk1”), c(“Bulk1”,“Bulk2”), c(“Bulk2”, “Bulk3”), c(“Bulk3”, “Bulk4”), c(“Bulk4”, “Bulk5”), c(“Bulk5”, “Bulk6”), c(“Bulk6”, “Bulk7”), c(“Bulk7”,“Bulk8”), c(“Bulk8”, “Postharvest”), c(“Bulk1”, “Rhizosphere1”), c(“Bulk2”, “Rhizosphere2”), c(“Bulk3”, “Rhizosphere3”), c(“Bulk4”, “Rhizosphere4”), c(“Bulk5”, “Rhizosphere5”), c(“Bulk6”, “Rhizosphere6”), c(“Bulk7”, “Rhizosphere7”), c(“Bulk8”, “Rhizosphere8”)) lable_order &lt;- c(“Presowing”, “Bulk1”, “Rhizosphere1”, “Bulk2”, “Rhizosphere2”, “Bulk3”, “Rhizosphere3”, “Bulk4”, “Rhizosphere4”, “Bulk5”, “Rhizosphere5”, “Bulk6”, “Rhizosphere6”, “Bulk7”, “Rhizosphere7”, “Bulk8”, “Rhizosphere8”, “Postharvest” ) ObservedOrder = c(3100,3100,3100,3100,3100,3100,3100,3100,3100, 3400,3400,3400,3400,3400,3400,3400,3400,3400,3700,3700,3700,3700,3700,3700,3700,3700) ShannonOrder = c(7.7,7.7,7.7,7.7,7.7,7.7,7.7,7.7,7.7, 8.2,8.2,8.2,8.2,8.2,8.2,8.2,8.2,8.2, 8.7,8.7,8.7,8.7,8.7,8.7,8.7,8.7) #plot Observed ASVs and Shannon diversity measures alphaObserved &lt;- ggplot(data = metadata, aes(x = factor(Description, levels = lable_order), y = ObservedASV, color = factor(Type, levels = c(“PreSowing”, “Bulk”, “Rhizosphere”, “PostHarvest”)))) + geom_boxplot() + geom_point(size = 3 ) + stat_compare_means(comparisons = comparisonsList, label = “p.format”, label.y = ObservedOrder) + theme(legend.position = “top”) + ylab(“Observed ASVs”) + ggtitle(“Alpha diversity measures”) + theme(plot.title = element_text(hjust = 0.5)) + labs(color = “Sample type”) + theme(axis.title.x = element_blank() , axis.text.x = element_blank(), axis.ticks.x = element_blank()) + theme(plot.margin = unit(c(5,5,1,5), “pt”)) + geom_text(mapping = aes(x = 10, y = 4100, fontface = “plain”, size = 3), color = “black”, label = paste0(“Kruskal-Wallis (plotted groups) p-value:”, compare_means(formula = ObservedASV ~ Description, data = metadata, method = “kruskal.test”)<span class="math inline">\(p.format , "          Kruskal-Wallis (R1 to R8) p-value: ", compare_means(formula = ObservedASV ~ Description, data = metadata[metadata\)</span>Type == “Rhizosphere”,], method = “kruskal.test”)<span class="math inline">\(p.format , "          Kruskal-Wallis (B1 to B8) p-value: ", compare_means(formula = ObservedASV ~ Description, data = metadata[metadata\)</span>Type == “Bulk”,], method = “kruskal.test”)<span class="math inline">\(p.format ), show.legend = FALSE, inherit.aes = FALSE) + geom_text(mapping = aes(x = 10, y = 4300, fontface = "plain", size = 3 ), color = "black", label = paste0("Kruskal-Wallis (among types: presowing, bulk, rhizosphere and postharvest soil) p-value: ", compare_means(formula = ObservedASV ~ Type, data = metadata, method = "kruskal.test")\)</span>p.format), show.legend = FALSE) alphaShannon &lt;- ggplot(data = metadata, aes(x = factor(Description, levels = lable_order), y = ShannonDiversity, color = factor(Type, levels = c(“PreSowing”, “Bulk”, “Rhizosphere”, “PostHarvest”)))) + geom_boxplot() + geom_point(size = 3 ) + stat_compare_means(comparisons = comparisonsList, label = “p.format”, label.y = ShannonOrder) + theme(legend.position = “none”) + xlab(“Sample groups”) + ylab(“Shannon diversity”) + theme(strip.background.x = element_blank(), strip.text.x = element_blank() ) + theme(plot.margin = unit(c(1,5,5,21), “pt”)) + geom_text(mapping = aes(x = 10, y = 9.2, fontface = “plain”, size = 3 ), color = “black”, label = paste0(“Kruskal-Wallis (plotted groups) p-value:”, compare_means(formula = ShannonDiversity ~ Description, data = metadata, method = “kruskal.test”)<span class="math inline">\(p.format , "          Kruskal-Wallis (R1 to R8) p-value: ", compare_means(formula = ShannonDiversity ~ Description, data = metadata[metadata\)</span>Type == “Rhizosphere”,], method = “kruskal.test”)<span class="math inline">\(p.format , "          Kruskal-Wallis (B1 to B8) p-value: ", compare_means(formula = ShannonDiversity ~ Description, data = metadata[metadata\)</span>Type == “Bulk”,], method = “kruskal.test”)<span class="math inline">\(p.format )) + geom_text(mapping = aes(x = 10, y = 9.5, fontface = "plain", size = 3 ), color = "black", label = paste0("Kruskal-Wallis (among types: presowing, bulk, rhizosphere and postharvest soil) p-value: ", compare_means(formula = ShannonDiversity ~ Type, data = metadata, method = "kruskal.test")\)</span>p.format )) palpha &lt;- ggarrange(alphaObserved, alphaShannon, ncol = 1, align = “hv”) ggsave(filename = “alpha-plot.pdf”, plot = palpha, device = “pdf”, width = width<em>1.25, height = height</em>1.25, units = “mm”)</p>
+<p>########plotting taxonomy #####PHYLUM # define the levels to glom ps2.Phylum.rel &lt;- tax_glom(physeq = ps2.rel, taxrank = “Phylum”, NArm = FALSE) #adding phylum names and changing names of NA to Unclassified taxa taxa_names(ps2.Phylum.rel) &lt;- tax_table(ps2.Phylum.rel)[, 2] taxa_names(ps2.Phylum.rel)[is.na(taxa_names(ps2.Phylum.rel))] &lt;- “Unclassified Phylum” #create dataframe ps2.Phylum.rel.df &lt;- data.table(psmelt(ps2.Phylum.rel)) #group df by taxa and calculate median rel. abundance ps2.Phylum.rel.df[, median := median(Abundance, na.rm = TRUE), by = “OTU”] #calculate the phyla-wise group significance phylum.type &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Phylum.rel.df, method = “kruskal.test”, p.adjust.method = “BH”, group.by = “OTU”) phylum.type.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Phylum.rel.df[ps2.Phylum.rel.df<span class="math inline">\(Description != "Rhizosphere1", ], method = "kruskal.test", p.adjust.method = "BH", group.by = "OTU")
+phylum.type.wilcox &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Phylum.rel.df, method = "wilcox.test", p.adjust.method = "BH", group.by = "OTU")
+phylum.type.wilcox.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Phylum.rel.df[ps2.Phylum.rel.df\)</span>Description != “Rhizosphere1”, ], method = “wilcox.test”, p.adjust.method = “BH”, group.by = “OTU”) phylum.BR &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Phylum.rel.df[ps2.Phylum.rel.df<span class="math inline">\(Type %in% c("Bulk", "Rhizosphere"), ], method = "wilcox.test", p.adjust.method = "BH", group.by = "OTU")
+phylum.BR.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Phylum.rel.df[ps2.Phylum.rel.df\)</span>Type %in% c(“Bulk”, “Rhizosphere”) &amp; ps2.Phylum.rel.df$Description != “Rhizosphere1”, ], method = “wilcox.test”, p.adjust.method = “BH”, group.by = “OTU”)</p>
+</section>
+<section id="change-name-of-taxa-less-than-1" class="level1">
+<h1>Change name of taxa less than 1%</h1>
+<p>ps2.Phylum.rel.df[(median &lt;= 0.01), OTU := “Less Abundant Phyla”] # Creating df with summarized lesser abundant taxa abundance ps2.Phylum.rel.df &lt;- ps2.Phylum.rel.df[, sum(Abundance), by = list(OTU,Sample,Type,Description,CollectionTimepoint,Stage)] colnames(ps2.Phylum.rel.df)[7] &lt;- “Abundance” #get color codes, store in object and remember to not run that code again or different colors everytime colcodes.phylum &lt;- distinctColorPalette(length(unique(ps2.Phylum.rel.df<span class="math inline">\(OTU))+13)
+#plotting stacked bar chart
+Phylum.bar &lt;- ggplot(data=ps2.Phylum.rel.df, aes(x=Sample, y=Abundance*100, fill=OTU)) + geom_bar(position="stack", stat="identity", color = "black", size = 0.05, width = 1)  + xlab("Samples") + ylab("Relative abundance of Phyla")   + scale_fill_manual(values = colcodes.phylum) + labs(fill = "Phylum") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, color = sort(ps2.Phylum.rel.df[,unique(Type), by = Sample]\)</span>V1))) + coord_cartesian(expand = FALSE ) + guides(fill=guide_legend(ncol=1)) + scale_y_continuous(breaks = c(seq(from = 0, to = 100, by = 5))) ggsave(filename = “Phylum-bar-plot.pdf”, plot = Phylum.bar, device = “pdf”, width = width, height = height, units = “mm”) ##</p>
+<p>#####Genus # # define the levels to glom ps2.Genus.rel &lt;- tax_glom(physeq = ps2.rel, taxrank = “Genus”, NArm = FALSE) #melt to dataframe and convert factor to character ps2.Genus.rel.df &lt;- data.table(psmelt(ps2.Genus.rel)) ps2.Genus.rel.df<span class="math inline">\(Kingdom &lt;- as.character(ps2.Genus.rel.df\)</span>Kingdom) ps2.Genus.rel.df<span class="math inline">\(Phylum &lt;- as.character(ps2.Genus.rel.df\)</span>Phylum) ps2.Genus.rel.df<span class="math inline">\(Class &lt;- as.character(ps2.Genus.rel.df\)</span>Class) ps2.Genus.rel.df<span class="math inline">\(Order &lt;- as.character(ps2.Genus.rel.df\)</span>Order) ps2.Genus.rel.df<span class="math inline">\(Family &lt;- as.character(ps2.Genus.rel.df\)</span>Family) ps2.Genus.rel.df<span class="math inline">\(Genus &lt;- as.character(ps2.Genus.rel.df\)</span>Genus) #NA entries in Genera were renamed to “highest annotated level”_X ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Phylum),]\)</span>Phylum &lt;- paste0(ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Phylum),]\)</span>Kingdom, “_X”) ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Class),]\)</span>Class &lt;- paste0(ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Class),]\)</span>Phylum, “_X”) ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Order),]\)</span>Order &lt;- paste0(ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Order),]\)</span>Class, “_X”) ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Family),]\)</span>Family &lt;- paste0(ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Family),]\)</span>Order, “_X”) ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Genus),]\)</span>Genus &lt;- paste0(ps2.Genus.rel.df[is.na(ps2.Genus.rel.df<span class="math inline">\(Genus),]\)</span>Family, “_X”)</p>
+<p>genus.type &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Genus.rel.df, method = “kruskal.test”, p.adjust.method = “BH”, group.by = “Genus”) genus.type.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Genus.rel.df[ps2.Genus.rel.df<span class="math inline">\(Description != "Rhizosphere1", ], method = "kruskal.test", p.adjust.method = "BH", group.by = "Genus")
+genus.type.wilcox &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Genus.rel.df, method = "wilcox.test", p.adjust.method = "BH", group.by = "Genus")
+genus.type.wilcox.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Genus.rel.df[ps2.Genus.rel.df\)</span>Description != “Rhizosphere1”, ], method = “wilcox.test”, p.adjust.method = “BH”, group.by = “Genus”) genus.BR &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Genus.rel.df[ps2.Genus.rel.df<span class="math inline">\(Type %in% c("Bulk", "Rhizosphere"), ], method = "wilcox.test", p.adjust.method = "BH", group.by = "Genus")
+genus.BR.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Type, data = ps2.Genus.rel.df[ps2.Genus.rel.df\)</span>Type %in% c(“Bulk”, “Rhizosphere”) &amp; ps2.Genus.rel.df$Description != “Rhizosphere1”, ], method = “wilcox.test”, p.adjust.method = “BH”, group.by = “Genus”) write.table(x = genus.type, file = “genus-type.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = genus.type.R1, file =”genus-type-R1.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = genus.type.wilcox, file =”genus-type-wilcoxon.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = genus.type.wilcox.R1, file =”genus-type-wilcoxon-R1.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = genus.BR, file =”genus-BR.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = genus.BR.R1, file =”genus-BR-R1.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE)</p>
+<p>ps2Genus.df = ps2.Genus.rel.df # #group df by taxa and calculate mean rel. abundance and maximum abundance per genus ps2.Genus.rel.df[, mean := ((sum(Abundance, na.rm = TRUE))/88), by = “Genus”] ps2.Genus.rel.df[, maximum := max(Abundance[Abundance &gt; 0], na.rm = TRUE), by = “Genus”] #The median value was not considered for filtering as the values seems to differ drastically for Rhizosphere and other groups. #To get a better picture, mean &gt; 0.01(1%) was considered. Further, considering the highly varying range of each genera, additinal condition with maximum abundance of genera &gt; 0.05(5%) was also considered. #Those not meeting these criteria were renamed as Lesser abundant genera ps2.Genus.rel.df[(mean &lt; 0.01 &amp; maximum &lt; 0.05), Genus := ” Less Abundant Genera(n=867)”] #Creating df with summarized lesser abundant taxa abundance ps2.Genus.rel.df &lt;- ps2.Genus.rel.df[, sum(Abundance), by = list(Genus,Sample,Type,Description,CollectionTimepoint,Stage)] colnames(ps2.Genus.rel.df)[7] &lt;- “Abundance” # get color codes, store in object and remember to not run that code again or different colors everytime colcodes.genus &lt;- distinctColorPalette(length(unique(ps2.Genus.rel.df<span class="math inline">\(Genus))+7)
+#plotting stacked bar chart
+Genus.bar &lt;- ggplot(data=ps2.Genus.rel.df, aes(x=Sample, y=Abundance*100, fill=Genus)) + geom_bar(position="stack", stat="identity", color = "black", size=0.05, width = 1)  + xlab("Samples") + ylab("Relative abundance of Genera")   + scale_fill_manual(values = colcodes.genus) + labs(fill = "Genus") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, color = sort(ps2.Genus.rel.df[,unique(Type), by = Sample]\)</span>V1))) + coord_cartesian(expand = FALSE, ylim = c(0, 85) ) + guides(fill=guide_legend(ncol=1)) + scale_y_continuous(breaks = c(seq(from = 0, to = 100, by = 5))) ggsave(filename = “Genus-bar-plot.pdf”, plot = Genus.bar, device = “pdf”,dpi = 300, width = width, height = height, units = “mm”) # #plotting box plot for these taxa. #Since Enterobacteriaceae_X was absent from all samples of PreSowing, it was causing troubles in proper alignment of dots and boxplot. An arbitary close to 0 value was assigned for the purpose. Also, y-axis labels were manually given to avoid scientific notation; the last label was required to adjust length of labels. ps2.Genus.rel.df[ps2.Genus.rel.df<span class="math inline">\(Genus == "Enterobacteriaceae_X" &amp; ps2.Genus.rel.df\)</span>Sample == “PS1”]<span class="math inline">\(Abundance &lt;- 0.00000001
+Genus.box &lt;- ggplot(ps2.Genus.rel.df[Genus != " Less Abundant Genera(n=867)"], aes(x=Genus, y=Abundance*100, fill = factor(Type, levels = c("PreSowing", "Bulk", "Rhizosphere", "PostHarvest")))) + geom_point(position=position_dodge(width=0.75), show.legend = FALSE) + geom_boxplot(alpha = 0.7, position = position_dodge(width = 0.75, preserve = "single")) + scale_y_continuous(trans = "log10", labels = c("0", "0.01", "0.1", "1", "10", "100", "101")) + theme(legend.position = "left") + annotation_logticks(sides = "l") + scale_x_discrete(labels = function(labels) {sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n\n'), labels[i]))}) + ylab("Relative abundance of Genus") + xlab("") + theme(plot.margin=unit(c(1,0.25,0.25,0.25), "cm")) + labs(fill = "Type") + coord_cartesian(ylim = c(0.01, 100))
+# #compare means of all pairs using Wilcoxon test and melt the data frame
+Genus.means &lt;- compare_means(formula = Abundance ~ Type, data = ps2.Genus.rel.df[Genus != " Less Abundant Genera(n=867)"], group.by = "Genus")
+Genus.means\)</span>group &lt;- paste(Genus.means<span class="math inline">\(group2, Genus.means\)</span>group1, sep = ” vs “) Genus.means &lt;- Genus.means[,c(”Genus”, ”p.signif”, ”group”)] %&gt;% spread(Genus, p.signif) # #compare group means using Kruskal-Wallis test Genus.group.means &lt;- compare_means(formula = Abundance ~ Type, data = ps2.Genus.rel.df[Genus != ” Less Abundant Genera(n=867)”], group.by =”Genus”, method = “kruskal.test”) Genus.group.means &lt;- Genus.group.means[order(Genus.group.means<span class="math inline">\(Genus), c("Genus","p.signif", "method")] %&gt;% spread(Genus, p.signif)
+# #merge both comparisons
+Genus.group.means &lt;- rbind(Genus.group.means[,2:25], Genus.means[,2:25])
+rownames(Genus.group.means) &lt;- c("Kruskal-Wallis group test", Genus.means\)</span>group) # #create table Genus.text &lt;- ggtexttable(Genus.group.means, rows = rownames(Genus.group.means), cols = rep(x = 888888, times = 24), theme = ttheme(rownames.style = rownames_style(size = 10), colnames.style = colnames_style(size = 12, color = NA, fill = NA, linecolor = NA), tbody.style = tbody_style(size = 15))) + theme(plot.margin=unit(c(-13,0.25,0.25,0.25), “cm”)) Genus.plot2 &lt;- ggarrange(Genus.box, Genus.text, ncol = 1) ggsave(filename = “Genus-box-plot.pdf”, plot = Genus.plot2, device = “pdf”, width = width<em>1.66, height = height</em>1.66, units = “mm”)</p>
+<p>#SPECIES &amp; ASV #get a species level ps object and identify top 15 species to plot separately ps2.Species.rel &lt;- tax_glom(physeq = ps2.rel, taxrank = “Species”, NArm = FALSE) Species.name &lt;- names(sort(taxa_sums(subset_taxa(physeq = ps2.Species.rel, !is.na(Species))), decreasing = TRUE)[1:15]) #separate top 15 species in a new ps object and remove them from original ps object. Both of this will be plotted. ps2.Species &lt;- subset_taxa(physeq = ps2.Species.rel, rownames(tax_table(ps2.Species.rel)) %in% Species.name) <code>%notin%</code> &lt;- Negate(<code>%in%</code>) ps2.Species.rel &lt;- subset_taxa(physeq = ps2.Species.rel, rownames(tax_table(ps2.Species.rel)) %notin% Species.name) #rename species name to include genus name as well ps2.Species@tax_table@.Data[,7] = paste(ps2.Species@tax_table@.Data[,6], ps2.Species@tax_table@.Data[,7], sep = ” “)</p>
+<p>#plot the heatmap heatmap.species &lt;- plot_heatmap(physeq = ps2.Species, sample.order = “Description”, taxa.label = “Species”) heatmap.species &lt;- heatmap.species + theme(axis.text.x = element_text(angle = 0, hjust = 0.5, vjust = 1, size = 10, color = sort(metadata$Type)), axis.text.y = element_text(size = 7)) + scale_x_discrete(labels = function(labels) {sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, ’‘,’’), labels[i]))}) + aes(fill = Abundance * 100) + theme(plot.margin = unit(c(1,5,5,5), “pt”)) + labs(fill = “Abundance”) + scale_fill_gradient(limits=c(0.0005,75) , trans=log_trans(4), na.value = “black”, breaks = c(0.001,0.01,0.1,1,10,50)) + theme(legend.position=“none”) heatmap.ASV &lt;- plot_heatmap(physeq = ps2.Species.rel, sample.order = “Description”, max.label = 1000) heatmap.ASV &lt;- heatmap.ASV + aes(fill = Abundance * 100) + labs(fill = “Abundance”) + scale_fill_gradient(limits=c(0.0005,75), trans=log_trans(4), na.value = “black”, breaks = c(0.001,0.01,0.1,1,10,50)) + theme(legend.position=“left”) + theme(axis.title.x = element_blank(), axis.text.x = element_blank()) + theme(plot.margin = unit(c(5,5,1,25), “pt”)) heatmapPlot &lt;- ggarrange(heatmap.ASV, heatmap.species, nrow = 2, ncol = 1, heights = c(4,1), align = “hv” ) ggsave(filename = “heatmap-ASV-Species.pdf”, plot = heatmapPlot, device = “pdf”, width = height<em>2, height = width</em>2, units = “mm”)</p>
+<p>########BETA DIVERSITY</p>
+<p>#calculating bray-curtis distance and NMDS ordination ps2.bray.dist = phyloseq::distance(ps2.rel, method=“bray”) ps2.bray.ordination = ordinate(ps2.rel, method=“NMDS”, distance=ps2.bray.dist) #perform permanova on calculated distance across Type of samples ps2.adonis &lt;- vegan::adonis(ps2.bray.dist ~ Type, data=metadata) #taken from microbiomeseq package (http://www.github.com/umerijaz/microbiomeSeq) ps2.adn_pvalue &lt;- ps2.adonis[[1]][[“Pr(&gt;F)”]][1] ps2.adn_rsquared &lt;- round(ps2.adonis[[1]][[“R2”]][1],3) #use the bquote function to format adonis results to be annotated on the ordination plot. ps2.signi_label &lt;- paste(cut(ps2.adn_pvalue, breaks = c(-Inf, 0.001, 0.01, 0.05, Inf), label = c(“<em><strong>”, ”</strong>”, ”</em>”, “.”))) ps2.adn_res_format &lt;- bquote(atop(atop(“PERMANOVA”, R^2==~.(ps2.adn_rsquared)), atop(“p-value=”<sub>.(ps2.adn_pvalue)</sub>.(ps2.signi_label), phantom()))) #extract NMDS stress for plotting ps2.stress.label &lt;- paste(“NMDS Stress =”, round(ps2.bray.ordination$stress, 3)) #plot ordination. Shapes are numbers 0-9 for respective collections. shapes &lt;- 48:57 betaplot.ps2 &lt;- plot_ordination(ps2.rel, ps2.bray.ordination, color = “Type”, shape = “CollectionTimepoint”) + theme(aspect.ratio = 1) + geom_point(size = 5) + scale_shape_manual(values = shapes) + geom_convexhull(inherit.aes = TRUE, alpha = 0.1, show.legend = FALSE ,aes(fill = “Description”)) + ggtitle(“NMDS plot using Bray-Curtis distance for relative abundance of all samples”) + labs(color = “Type”) #add NMDS stress on the graph….adjust the position based on the actual graph. betaplot.ps2 &lt;- betaplot.ps2 + annotation_custom(grob = textGrob(label = ps2.stress.label, hjust = 0, gp = gpar(fontsize = 20, fontface = “bold”)), xmin = -0.45, xmax = -0.45, ymin = 0.55, ymax = 0.55) #add PERMANOVA results on the graph….adjust the position based on the actual graph. betaplot.ps2 &lt;- betaplot.ps2 + annotation_custom(grob = textGrob(label = ps2.adn_res_format, hjust = 0, gp = gpar(fontsize = 20, fontface = “bold”)), xmin = -0.3, xmax = -0.3, ymin = 0.4, ymax = 0.4) ggsave(filename = “beta-plot-all.pdf”, plot = betaplot.ps2, device = “pdf”, width = width, height = height, units = “mm”) #plotting stressplot for calculated NMDS ordinates stressplot(ps2.bray.ordination)</p>
+<p>############################Looking through Rhizosphere samples############### metadata.rhizo &lt;- metadata[metadata$Type == “Rhizosphere”,] ########plotting taxonomy #####PHYLUM # define the levels to glom Rhizo.Phylum.rel &lt;- tax_glom(physeq = Rhizosphereps2.rel, taxrank = “Phylum”, NArm = FALSE) #adding phylum names and changing names of NA to Unclassified taxa taxa_names(Rhizo.Phylum.rel) &lt;- tax_table(Rhizo.Phylum.rel)[, 2] taxa_names(Rhizo.Phylum.rel)[is.na(taxa_names(Rhizo.Phylum.rel))] &lt;- “Unclassified Phylum” #create dataframe Rhizo.Phylum.rel.df &lt;- data.table(psmelt(Rhizo.Phylum.rel)) #group df by taxa and calculate mean rel. abundance Rhizo.Phylum.rel.df[, mean := mean(Abundance, na.rm = TRUE), by = “OTU”]</p>
+<p>#group-wise significance Rhizo.stage &lt;- ggpubr::compare_means(formula = Abundance ~ Stage, data = Rhizo.Phylum.rel.df[Rhizo.Phylum.rel.df<span class="math inline">\(mean &gt; 0.0001,], method = "kruskal.test", p.adjust.method = "BH", group.by = "OTU")
+Rhizo.stage.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Stage, data = Rhizo.Phylum.rel.df[Rhizo.Phylum.rel.df\)</span>mean &gt; 0.0001 &amp; Rhizo.Phylum.rel.df<span class="math inline">\(Description != "Rhizosphere1",], method = "kruskal.test", p.adjust.method = "BH", group.by = "OTU")
+Rhizo.stage.wilcox &lt;- ggpubr::compare_means(formula = Abundance ~ Stage, data = Rhizo.Phylum.rel.df[Rhizo.Phylum.rel.df\)</span>mean &gt; 0.0001,], method = “wilcox.test”, p.adjust.method = “BH”, group.by = “OTU”) Rhizo.stage.wilcox.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Stage, data = Rhizo.Phylum.rel.df[Rhizo.Phylum.rel.df<span class="math inline">\(mean &gt; 0.0001 &amp; Rhizo.Phylum.rel.df\)</span>Description != “Rhizosphere1”,], method = “wilcox.test”, p.adjust.method = “BH”, group.by = “OTU”)</p>
+<p>write.table(x = Rhizo.stage, file = “Rhizosphere-stage.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = Rhizo.stage.R1, file =”Rhizosphere-stage-R1.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = Rhizo.stage.wilcox, file =”Rhizosphere-stage-wilcoxon.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = Rhizo.stage.wilcox.R1, file =”Rhizosphere-stage-wilcoxon-R1.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE)</p>
+</section>
+<section id="change-name-of-taxa-less-than-1-storing-the-names-in-new-column" class="level1">
+<h1>Change name of taxa less than 1%, storing the names in new column</h1>
+<p>Rhizo.Phylum.rel.df[(mean &lt;= 0.01), OTU := “Less Abundant Phyla”] # Creating df with summarized lesser abundant taxa abundance Rhizo.Phylum.rel.df &lt;- Rhizo.Phylum.rel.df[, sum(Abundance), by = list(OTU,Sample,Type,Description,CollectionTimepoint,Stage)] colnames(Rhizo.Phylum.rel.df)[7] &lt;- “Abundance” #compare means of all pairs using Wilcoxon test and melt the data frame Rhizo.Phylum.means &lt;- compare_means(formula = Abundance ~ Stage, data = Rhizo.Phylum.rel.df, group.by = “OTU”) Rhizo.Phylum.means<span class="math inline">\(group &lt;- paste(Rhizo.Phylum.means\)</span>group2, Rhizo.Phylum.means<span class="math inline">\(group1, sep = " vs ")
+Rhizo.Phylum.means &lt;- Rhizo.Phylum.means[,c("OTU", "p.signif", "group")] %&gt;% spread(OTU, p.signif)
+#compare group means using Kruskal-Wallis test
+Rhizo.Phylum.group.means &lt;- compare_means(formula = Abundance ~ Stage, data = Rhizo.Phylum.rel.df, group.by = "OTU", method = "kruskal.test")
+Rhizo.Phylum.group.means &lt;- Rhizo.Phylum.group.means[order(Rhizo.Phylum.group.means\)</span>OTU), c(“OTU”,“p.signif”, “method”)] %&gt;% spread(OTU, p.signif) #merge both comparisons Rhizo.Phylum.group.means &lt;- rbind(Rhizo.Phylum.group.means[,2:13], Rhizo.Phylum.means[,2:13]) rownames(Rhizo.Phylum.group.means) &lt;- c(“Kruskal-Wallis group test”, Rhizo.Phylum.means$group) #plot box plot Rhizo.Phylum.box &lt;- ggplot(Rhizo.Phylum.rel.df, aes(x=OTU, y=Abundance*100, fill = factor(Stage, levels=c(“Seedling”,“PreNodulating”,“Nodulating”,“Flowering”,“Matured”)))) + geom_point(position=position_dodge(width=0.75), show.legend = FALSE, size=1) + geom_boxplot(alpha = 0.7) + scale_y_log10() + theme(legend.position = “left”) + annotation_logticks(sides = “l”) + scale_x_discrete(labels = function(labels) {sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, ’‘,’’), labels[i]))}) + ylab(“Relative abundance of Phylum”) + xlab(““) + theme(plot.margin=unit(c(1,0.25,0.25,0.25),”cm”)) + labs(fill = “Stage”) #create table. Column names were added and were hidden to make the column width uniform and adjust with other plot Rhizo.Phylum.text &lt;- ggtexttable(Rhizo.Phylum.group.means, rows = rownames(Rhizo.Phylum.group.means), cols = rep(x = 8888, times = 12), theme = ttheme(rownames.style = rownames_style(size = 11), colnames.style = colnames_style(size = 20, fill = NA, color = NA, linecolor = NA), tbody.style = tbody_style(size = 15))) + theme(plot.margin=unit(c(-3,0.25,0.25,0.25), “cm”)) Rhizo.Phylum.plot2 &lt;- ggarrange(Rhizo.Phylum.box, Rhizo.Phylum.text, nrow=2) Rhizo.Phylum.plot2 ggsave(filename = “Rhizo.Phylum-box-plot.pdf”, plot = Rhizo.Phylum.plot2, device = “pdf”, width = width, height = height, units = “mm”, dpi = 300) #</p>
+<p>#####Genus # # define the levels to glom Rhizo.ps2.Genus.rel &lt;- tax_glom(physeq = Rhizosphereps2.rel, taxrank = “Genus”, NArm = FALSE) #melt to dataframe and convert factor to character Rhizo.ps2.Genus.rel.df &lt;- data.table(psmelt(Rhizo.ps2.Genus.rel)) Rhizo.ps2.Genus.rel.df<span class="math inline">\(Kingdom &lt;- as.character(Rhizo.ps2.Genus.rel.df\)</span>Kingdom) Rhizo.ps2.Genus.rel.df<span class="math inline">\(Phylum &lt;- as.character(Rhizo.ps2.Genus.rel.df\)</span>Phylum) Rhizo.ps2.Genus.rel.df<span class="math inline">\(Class &lt;- as.character(Rhizo.ps2.Genus.rel.df\)</span>Class) Rhizo.ps2.Genus.rel.df<span class="math inline">\(Order &lt;- as.character(Rhizo.ps2.Genus.rel.df\)</span>Order) Rhizo.ps2.Genus.rel.df<span class="math inline">\(Family &lt;- as.character(Rhizo.ps2.Genus.rel.df\)</span>Family) Rhizo.ps2.Genus.rel.df<span class="math inline">\(Genus &lt;- as.character(Rhizo.ps2.Genus.rel.df\)</span>Genus) #NA entries in Genera were renamed to “highest annotated level”_X Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Phylum),]\)</span>Phylum &lt;- paste0(Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Phylum),]\)</span>Kingdom, “_X”) Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Class),]\)</span>Class &lt;- paste0(Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Class),]\)</span>Phylum, “_X”) Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Order),]\)</span>Order &lt;- paste0(Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Order),]\)</span>Class, “_X”) Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Family),]\)</span>Family &lt;- paste0(Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Family),]\)</span>Order, “_X”) Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Genus),]\)</span>Genus &lt;- paste0(Rhizo.ps2.Genus.rel.df[is.na(Rhizo.ps2.Genus.rel.df<span class="math inline">\(Genus),]\)</span>Family, “_X”) #group df by taxa and calculate mean rel. abundance Rhizo.ps2.Genus.rel.df[, mean := (mean(Abundance, na.rm = TRUE)), by = “Genus”] #The median value was not considered for filtering as the values seems to differ drastically for Rhizosphere and other groups. #Comparison of all genera #group-wise significance Rhizo.genus.stage &lt;- ggpubr::compare_means(formula = Abundance ~ Stage, data = Rhizo.ps2.Genus.rel.df[Rhizo.ps2.Genus.rel.df<span class="math inline">\(mean &gt; 0.00001,], method = "kruskal.test", p.adjust.method = "BH", group.by = "Genus")
+Rhizo.genus.stage.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Stage, data = Rhizo.ps2.Genus.rel.df[Rhizo.ps2.Genus.rel.df\)</span>mean &gt; 0.00001 &amp; Rhizo.ps2.Genus.rel.df<span class="math inline">\(Description != "Rhizosphere1",], method = "kruskal.test", p.adjust.method = "BH", group.by = "Genus")
+Rhizo.genus.stage.wilcox &lt;- ggpubr::compare_means(formula = Abundance ~ Stage, data = Rhizo.ps2.Genus.rel.df[Rhizo.ps2.Genus.rel.df\)</span>mean &gt; 0.00001,], method = “wilcox.test”, p.adjust.method = “BH”, group.by = “Genus”) Rhizo.genus.stage.wilcox.R1 &lt;- ggpubr::compare_means(formula = Abundance ~ Stage, data = Rhizo.ps2.Genus.rel.df[Rhizo.ps2.Genus.rel.df<span class="math inline">\(mean &gt; 0.00001 &amp; Rhizo.ps2.Genus.rel.df\)</span>Description != “Rhizosphere1”,], method = “wilcox.test”, p.adjust.method = “BH”, group.by = “OTU”)</p>
+<p>write.table(x = Rhizo.genus.stage, file = “Rhizosphere-genus-stage.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = Rhizo.genus.stage.R1, file =”Rhizosphere-genus-stage-R1.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = Rhizo.genus.stage.wilcox, file =”Rhizosphere-genus-stage-wilcoxon.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE) write.table(x = Rhizo.genus.stage.wilcox.R1, file =”Rhizosphere-genus-stage-wilcoxon-R1.txt”, quote = FALSE, sep = “, row.names = FALSE, col.names = TRUE)</p>
+<p>#To get a better picture, mean &gt; 0.01(1%) was considered for plotting. #Those not meeting these criteria were renamed as Lesser abundant genera Rhizo.ps2.Genus.rel.df[(mean &lt; 0.01), Genus := “Less Abundant Genera”] #Creating df with summarized lesser abundant taxa abundance Rhizo.ps2.Genus.rel.df &lt;- Rhizo.ps2.Genus.rel.df[, sum(Abundance), by = list(Genus,Sample,Type,Description,CollectionTimepoint,Stage)] colnames(Rhizo.ps2.Genus.rel.df)[7] &lt;- “Abundance” # #plot box plot Rhizo.Genus.box &lt;- ggplot(Rhizo.ps2.Genus.rel.df[Genus != “Less Abundant Genera”], aes(x=Genus, y=Abundance<em>100, fill = factor(Stage, levels=c(“Seedling”,“PreNodulating”,“Nodulating”,“Flowering”,“Matured”)))) + geom_point(position=position_dodge(width=0.75), show.legend = FALSE, size = 1) + geom_boxplot(alpha = 0.7) + scale_y_log10() + theme(legend.position = “left”, axis.text.x = element_text(size = 7)) + annotation_logticks(sides = “l”) + scale_x_discrete(labels = function(labels) {sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, ’‘,’’), labels[i]))}) + ylab(“Relative abundance of Genus”) + xlab(““) + theme(plot.margin=unit(c(1,0.25,0.25,0.5),”cm”)) + labs(fill = “Stage”) # #compare means of all pairs using Wilcoxon test and melt the data frame Rhizo.Genus.means &lt;- compare_means(formula = Abundance ~ Stage, data = Rhizo.ps2.Genus.rel.df[Genus != “Less Abundant Genera”], group.by = “Genus”) Rhizo.Genus.means<span class="math inline">\(group &lt;- paste(Rhizo.Genus.means\)</span>group2, Rhizo.Genus.means<span class="math inline">\(group1, sep = " vs ")
+Rhizo.Genus.means &lt;- Rhizo.Genus.means[,c("Genus", "p.signif", "group")] %&gt;% spread(Genus, p.signif)
+# #compare group means using Kruskal-Wallis test
+Rhizo.Genus.group.means &lt;- compare_means(formula = Abundance ~ Stage, data = Rhizo.ps2.Genus.rel.df[Genus != "Less Abundant Genera"], group.by = "Genus", method = "kruskal.test")
+Rhizo.Genus.group.means &lt;- Rhizo.Genus.group.means[order(Rhizo.Genus.group.means\)</span>Genus), c(“Genus”,“p.signif”, “method”)] %&gt;% spread(Genus, p.signif) # #merge both comparisons Rhizo.Genus.group.means &lt;- rbind(Rhizo.Genus.group.means[,2:19], Rhizo.Genus.means[,2:19]) rownames(Rhizo.Genus.group.means) &lt;- c(“Kruskal-Wallis group test”, Rhizo.Genus.means$group) # #create table Rhizo.Genus.text &lt;- ggtexttable(Rhizo.Genus.group.means, rows = rownames(Rhizo.Genus.group.means), cols = rep(x = 8888, times = 18), theme = ttheme(rownames.style = rownames_style(size = 11), colnames.style = colnames_style(size = 16, fill = NA, color = NA, linecolor = NA), tbody.style = tbody_style(size = 11))) + theme(plot.margin=unit(c(-6,0.25,0.25,0.25), “cm”)) Rhizo.Genus.plot2 &lt;- ggarrange(Rhizo.Genus.box, Rhizo.Genus.text, nrow = 2) ggsave(filename = “Rhizo.Genus-box-plot.pdf”, plot = Rhizo.Genus.plot2, device = “pdf”, width = width</em>1.2, height = height*1.2, units = “mm”, dpi = 300) ####</p>
+<p>########BETA DIVERSITY #calculating bray-curtis distance and NMDS ordination Rhizo.ps2.bray.dist = phyloseq::distance(Rhizosphereps2.rel, method=“bray”) Rhizo.ps2.bray.ordination = ordinate(Rhizosphereps2.rel, method=“NMDS”, distance=Rhizo.ps2.bray.dist) #fitting all the environmental variables(physical properties and nutrient composition) with calculated NMDS and identifying significantly associated ef.Rhizo.ps2 &lt;- envfit(Rhizo.ps2.bray.ordination, metadata.rhizo[,6:17], permu = 999) ef.Rhizo.ps2.df &lt;- as.data.frame(scores(ef.Rhizo.ps2, display = “vectors”)) ef.Rhizo.ps2.df &lt;- cbind(ef.Rhizo.ps2.df, EnvironFactor = rownames(ef.Rhizo.ps2.df), pvalue = ef.Rhizo.ps2<span class="math inline">\(vectors\)</span>pvals, color = “black”) ef.Rhizo.ps2.df<span class="math inline">\(color &lt;- as.character(ef.Rhizo.ps2.df\)</span>color) ef.Rhizo.ps2.df[ef.Rhizo.ps2.df<span class="math inline">\(pvalue &lt; 0.05,]\)</span>color &lt;- “red” #perform permanova on calculated distance across Type of samples Rhizo.ps2.adonis &lt;- vegan::adonis(Rhizo.ps2.bray.dist ~ Stage, data=metadata.rhizo) #taken from microbiomeseq package (http://www.github.com/umerijaz/microbiomeSeq) Rhizo.ps2.adn_pvalue&lt;-Rhizo.ps2.adonis[[1]][[“Pr(&gt;F)”]][1] Rhizo.ps2.adn_rsquared&lt;-round(Rhizo.ps2.adonis[[1]][[“R2”]][1],3) #use the bquote function to format adonis results to be annotated on the ordination plot. Rhizo.ps2.signi_label &lt;- paste(cut(Rhizo.ps2.adn_pvalue,breaks=c(-Inf, 0.001, 0.01, 0.05, Inf), label=c(“<em><strong>”, ”</strong>”, ”</em>”, “.”))) Rhizo.ps2.adn_res_format &lt;- bquote(atop(atop(“PERMANOVA”,R^2==~.(Rhizo.ps2.adn_rsquared)), atop(“p-value=”<sub>.(Rhizo.ps2.adn_pvalue)</sub>.(Rhizo.ps2.signi_label), phantom()))) #extract NMDS stress for plotting Rhizo.ps2.stress.label &lt;- paste(“NMDS Stress =”, round(Rhizo.ps2.bray.ordination<span class="math inline">\(stress, 3))
+Rhizo.shapes &lt;- 49:56
+#plot ordination
+Rhizo.betaplot.ps2 &lt;- plot_ordination(Rhizosphereps2.rel, Rhizo.ps2.bray.ordination, color="Stage", shape = "CollectionTimepoint") + theme(aspect.ratio=1) + geom_point(size=5) + scale_shape_manual(values=Rhizo.shapes) + geom_convexhull(inherit.aes = TRUE, alpha=0.1, show.legend = FALSE ,aes(fill = "Description")) + ggtitle("NMDS plot using Bray-Curtis distance for relative abundance of Rhizosphere samples")
+#add NMDS stress on the graph....adjust the position based on the actual graph.
+Rhizo.betaplot.ps2 &lt;- Rhizo.betaplot.ps2 + annotation_custom(grob = textGrob(label = Rhizo.ps2.stress.label, hjust = 0, gp = gpar(fontsize = 20, fontface = "bold")), xmin = -0.65, xmax = -0.65, ymin = 0.5, ymax = 0.5)
+#add PERMANOVA results on the graph....adjust the position based on the actual graph.
+Rhizo.betaplot.ps2 &lt;- Rhizo.betaplot.ps2 + annotation_custom(grob = textGrob(label = Rhizo.ps2.adn_res_format, hjust = 0, gp = gpar(fontsize = 20, fontface = "bold")), xmin = -0.6, xmax = -0.6, ymin = 0.35, ymax = 0.35)
+#add the results of environment fit. Plot arrows representing each variable. Red color indicates significant association
+Rhizo.betaplot.ps2 &lt;- Rhizo.betaplot.ps2 + geom_segment(data = ef.Rhizo.ps2.df,aes(x = 0, xend = NMDS1, y = 0, yend = NMDS2),arrow = arrow(length = unit(0.25, "cm")), colour = ef.Rhizo.ps2.df\)</span>color, inherit.aes = FALSE) + geom_text(data = ef.Rhizo.ps2.df, aes(x = NMDS1<em>1.05, y = NMDS2</em>1.05, label = EnvironFactor), size = 3, inherit.aes = FALSE) ggsave(filename = “beta-plot-Rhizo.pdf”, plot = Rhizo.betaplot.ps2, device = “pdf”, width = width<em>1.1, height = height</em>1.1, units = “mm”) #plotting stressplot for calculated NMDS ordinates stressplot(Rhizo.ps2.bray.ordination) #ordisurf Rhizo.ps2.ordisurf.df=data.frame(x=Rhizo.ps2.bray.ordination<span class="math inline">\(point[,1],y=Rhizo.ps2.bray.ordination\)</span>point[,2],Groups=metadata.rhizo[,“Stage”], Shapes = metadata.rhizo[,“CollectionTimepoint”], Description = metadata.rhizo[,“Description”]) Rhizo.ps2.ordisurf.plot &lt;- list() for (i in 1:length(variables)) { var &lt;- variables[i] ordi&lt;- vegan::ordisurf(Rhizo.ps2.bray.ordination,metadata.rhizo[,eval(var)],plot = FALSE, bs=“ds”) ordi.grid &lt;- ordi<span class="math inline">\(grid #extracts the ordisurf object
+  #str(ordi.grid) #it's a list though - cannot be plotted as is
+  ordi.mite &lt;- expand.grid(x = ordi.grid\)</span>x, y = ordi.grid<span class="math inline">\(y) #get x and ys
+  ordi.mite\)</span>z &lt;- as.vector(ordi.grid$z) #unravel the matrix for the z scores ordi.mite.na &lt;- data.frame(na.omit(ordi.mite)) ordiplot &lt;- ggplot() + stat_contour(data = ordi.mite.na, mapping = aes(x = x, y = y, z = z, colour = ..level..),positon=“identity”, size = 1) + scale_colour_gradientn(colours = myPalette(100)) + ggplot2::labs(colour = paste(var)) + xlab(“NMDS1”) + ylab(“NMDS2”) + theme(aspect.ratio=1) + new_scale_color() + geom_point(data=Rhizo.ps2.ordisurf.df, aes(x,y,shape = Shapes, color = Groups),size=3, inherit.aes = FALSE) + scale_shape_manual(values=Rhizo.shapes, guide=FALSE) + geom_convexhull(inherit.aes = FALSE, data = Rhizo.ps2.ordisurf.df, mapping = aes(x = x, y = y, fill = Description), alpha=0.1, show.legend = FALSE) + ggtitle(label = paste(“Ordisurf for envirnomental parameter”,var, sep = ““)) + guides(colour = guide_legend(order = 1)) Rhizo.ps2.ordisurf.plot[[eval(var)]] &lt;- ordiplot } Rhizo.ps2.ordisurf.plot.all &lt;- ggarrange(nrow = 4, ncol = 3, plotlist = Rhizo.ps2.ordisurf.plot) ggsave(filename =”beta-plot-ordisurf-rhizo.pdf”, plot = Rhizo.ps2.ordisurf.plot.all, device = “pdf”, width = height * 2, height = width * 2, units = “mm”)</p>
+<p>#pairwise adonis for bray-curtis distance Rhizo.pairwise.adonis.bray &lt;- pairwise.adonis(x = Rhizo.ps2.bray.dist, factors = metadata.rhizo<span class="math inline">\(CollectionTimepoint)
+#modify dataframe to be upper matrix
+Rhizo.pairwise.adonis.bray\)</span>pairs &lt;- as.character(Rhizo.pairwise.adonis.bray$pairs) Rhizo.pairwise.adonis.bray &lt;- separate(data = Rhizo.pairwise.adonis.bray[,c(1,6)], col = pairs, into = c(“g1”, “g2”), sep = ” vs “) Rhizo.pairwise.adonis.bray &lt;- spread(data = Rhizo.pairwise.adonis.bray, g2, p.value) rownames(Rhizo.pairwise.adonis.bray) &lt;- Rhizo.pairwise.adonis.bray[,1] Rhizo.pairwise.adonis.bray &lt;- Rhizo.pairwise.adonis.bray[,-1] write.table(x = Rhizo.pairwise.adonis.bray, file =”Rhizo.pairwise.adonis.bray.txt”, quote = FALSE, sep = “, na =”“, row.names = TRUE, col.names = TRUE) ##</p>
+<p>#####core microbiome #core microbiome for genera #genus level glommed phyloseq object already exists. However, need to modify the taxa names, so will make a new phyloseq object ps2Rhizogenus &lt;- Rhizo.ps2.Genus.rel Rhizo.taxa.genus &lt;- tax_table(ps2Rhizogenus) Rhizo.taxa.genus &lt;- as.data.frame(Rhizo.taxa.genus@.Data) colname &lt;- c(“Kingdom”, “Phylum”, “Class”, “Order”, “Family”, “Genus”) Rhizo.taxa.genus[colname] &lt;- sapply(Rhizo.taxa.genus[colname],as.character) Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Phylum),]\)</span>Phylum &lt;- paste0(Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Phylum),]\)</span>Kingdom, “_X”) Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Class),]\)</span>Class &lt;- paste0(Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Class),]\)</span>Phylum, “_X”) Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Order),]\)</span>Order &lt;- paste0(Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Order),]\)</span>Class, “_X”) Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Family),]\)</span>Family &lt;- paste0(Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Family),]\)</span>Order, “_X”) Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Genus),]\)</span>Genus &lt;- paste0(Rhizo.taxa.genus[is.na(Rhizo.taxa.genus<span class="math inline">\(Genus),]\)</span>Family, “_X”) taxa_names(ps2Rhizogenus) &lt;- Rhizo.taxa.genus[, 6] Rhizo.genus.core &lt;- plot_core(x = ps2Rhizogenus, min.prevalence = 0.4, prevalences = seq(.05, 1, .05), detections = round(10^seq(log10(0.001), log10(1), length = 50), digits = 4), plot.type = ‘heatmap’, colours = rev(brewer.pal(5, “Spectral”))) + labs(x = “Detection Threshold”, y = “Genus”) + ggtitle(“Genera distribution at minimum prevalence 0.4 across rhizosphere samples”) + theme(axis.text.x = element_text(size = 5)) ggsave(filename = “Core-microbiome-rhizosphere-genus.pdf”, plot = Rhizo.genus.core, device = “pdf”, width = height <em>1.5, height = width</em>1.5, units = “mm”) #Extract the core microbiome genera for correlations rhizo.core &lt;- core(ps2Rhizogenus, detection = 0.001, prevalence = .4)</p>
+<p>#correlation among all core genera Rhizo.ps2Genus.df &lt;- psmelt(rhizo.core) Rhizo.genus.corr &lt;- Rhizo.ps2Genus.df[,c(“Sample”, “OTU”, “Abundance”)] Rhizo.genus.corr &lt;- spread(data = Rhizo.genus.corr, key = “OTU”, value = “Abundance”) rownames(Rhizo.genus.corr) &lt;- Rhizo.genus.corr<span class="math inline">\(Sample
+Rhizo.genus.corr &lt;- Rhizo.genus.corr[,-1]
+res &lt;- cor(Rhizo.genus.corr)
+res2&lt;- Hmisc::rcorr(as.matrix(Rhizo.genus.corr))
+pdf(file = "Rhizosphere-genus-0.001-correlation.pdf", width = height/15, height = width/15)
+corrplot(res2\)</span>r, p.mat = res2$P, sig.level = 0.05, insig = “blank”, tl.col=“black”, tl.cex = 0.5, order = “hclust”, method = “square”, addrect = 6) dev.off() ##</p>
+<p>#####ASV significance based on DESeq2 based log2FoldChange #between types of samples ds = phyloseq_to_deseq2(ps2, ~ Type) ds = DESeq(ds) alpha = 0.01 levels.comp &lt;- c(“PreSowing”, “Rhizosphere”, “Bulk”, “PostHarvest”) type.deseq &lt;- list() for ( i in 1:(length(levels.comp)-1)) { for (j in (i+1):length(levels.comp)) { comp1 &lt;- levels.comp[i] comp2 &lt;- levels.comp[j]</p>
+<pre><code>res = results(ds, contrast=c("Type", comp1, comp2), alpha=alpha)
+res = res[order(res$padj, na.last=NA), ]
+res_sig = res[(res$padj &lt; alpha), ]
+res_sig = cbind(as(res_sig, "data.frame"), as(tax_table(ps2)[rownames(res_sig), ], "matrix"))
+label.t &lt;- paste0(comp1, " vs ", comp2, "  (Number of ASVs = ", nrow(res_sig), ")")
+list.name &lt;- paste(comp1,comp2, sep = "_")
+type.deseq[[list.name]] &lt;- ggplot(res_sig, aes(x=Phylum, y=log2FoldChange, color=Phylum)) + geom_hline(yintercept = c(10,-10)) + geom_jitter(size=3, width = 0.2) + theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5)) + theme(legend.position = "none") + ggtitle(label = label.t) + geom_text_repel(aes(label=ifelse(log2FoldChange &gt;= 10 | log2FoldChange &lt;= -10,ifelse(test = (is.na(Genus)), as.character(paste(Family,"_X", sep = "")), as.character(Genus) ),'')),hjust=0,vjust=0)</code></pre>
+<p>} } type.deseq.plot = ggarrange(plotlist = type.deseq[c(1,4,2,5,3,6)], ncol = 2, nrow = 3, align = “hv”) ggsave(filename = “Deseq-type.pdf”, plot = type.deseq.plot, device = “pdf”, width = height<em>2.5, height = width</em>2.5, units = “mm”)</p>
+<p>#between Rhizosphere and bulk samples of respective collections ds.description = phyloseq_to_deseq2(ps2, ~ Description) ds.description = DESeq(ds.description) description.deseq &lt;- list() description.deseq.df &lt;- list() for (j in 1:8) { comp1 &lt;- paste(“Rhizosphere”,j, sep = ““) comp2 &lt;- paste(”Bulk”,j, sep = ““)</p>
+<pre><code>res = results(ds.description, contrast=c("Description", comp1, comp2), alpha=alpha)
+res = res[order(res$padj, na.last=NA), ]
+res_sig = res[(res$padj &lt; alpha), ]
+res_sig = cbind(as(res_sig, "data.frame"), as(tax_table(ps2)[rownames(res_sig), ], "matrix"))</code></pre>
+</section>
+<section id="label.t---paste0comp1-vs-comp2-number-of-asvs-nrowres_sig" class="level1">
+<h1>label.t &lt;- paste0(comp1, ” vs “, comp2,” (Number of ASVs = “, nrow(res_sig),”)“)</h1>
+</section>
+<section id="list.name---pastecomp1comp2-sep-_" class="level1">
+<h1>list.name &lt;- paste(comp1,comp2, sep = “_“)</h1>
+</section>
+<section id="description.deseqlist.name---ggplotres_sig-aesxphylum-ylog2foldchange-colorphylum-geom_hlineyintercept-c10-10-geom_jittersize3-width-0.2-themeaxis.text.x-element_textangle--90-hjust-0-vjust0.5-themelegend.position-none-ggtitlelabel-label.t-geom_text_repelaeslabelifelselog2foldchange-10-log2foldchange--10ifelsetest-is.nagenus-as.characterpastefamily_x-sep-as.charactergenus-hjust0vjust0" class="level1">
+<h1>description.deseq[[list.name]] &lt;- ggplot(res_sig, aes(x=Phylum, y=log2FoldChange, color=Phylum)) + geom_hline(yintercept = c(10,-10)) + geom_jitter(size=3, width = 0.2) + theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5)) + theme(legend.position = “none”) + ggtitle(label = label.t) + geom_text_repel(aes(label=ifelse(log2FoldChange &gt;= 10 | log2FoldChange &lt;= -10,ifelse(test = (is.na(Genus)), as.character(paste(Family,“_X”, sep = ““)), as.character(Genus) ),’’)),hjust=0,vjust=0)</h1>
+<pre><code>res_sig.df &lt;- ifelse(test = (is.na(res_sig$Family)), as.character(paste(ifelse(test = (is.na(res_sig$Order)), as.character(paste(ifelse(test = (is.na(res_sig$Class)), as.character(paste(ifelse(test = (is.na(res_sig$Phylum)), as.character(paste(res_sig$Kingdom,"_X", sep = "")), as.character(res_sig$Phylum) ),"_X", sep = "")), as.character(res_sig$Class) ),"_X", sep = "")), as.character(res_sig$Order) ),"_X", sep = "")), as.character(res_sig$Family))
+list.df.name &lt;- paste0("Collection",j)
+description.deseq.df[[list.df.name]] &lt;- as.character(res_sig.df)</code></pre>
+<p>} description.deseq.plot = ggarrange(plotlist = description.deseq, ncol = 2, nrow = 4, align = “hv”) ggsave(filename = “Deseq-description.pdf”, plot = description.deseq.plot, device = “pdf”, width = height<em>3, height = width</em>3, units = “mm”)</p>
+<p>#between crop development stages for rhizosphere samples ds.stage = phyloseq_to_deseq2(subset_samples(ps2, Type != “Bulk”), ~ Stage) ds.stage = DESeq(ds.stage) alpha = 0.01 levels.comp.stage &lt;- c(“PreSowing”, “Seedling”, “PreNodulating”, “Nodulating”, “Flowering”, “Matured”, “Postharvest”) stage.deseq &lt;- list() for ( i in 1:(length(levels.comp.stage)-1)) { for (j in (i+1):length(levels.comp.stage)) { comp1 &lt;- levels.comp.stage[i] comp2 &lt;- levels.comp.stage[j]</p>
+<pre><code>res = results(ds.stage, contrast=c("Stage", comp1, comp2), alpha=alpha)
+res = res[order(res$padj, na.last=NA), ]
+res_sig = res[(res$padj &lt; alpha), ]
+res_sig = cbind(as(res_sig, "data.frame"), as(tax_table(ps2)[rownames(res_sig), ], "matrix"))
+label.t &lt;- paste0(comp1, " vs ", comp2, "  (Number of ASVs = ", nrow(res_sig), ")")
+list.name &lt;- paste(comp1,comp2, sep = "_")
+stage.deseq[[list.name]] &lt;- ggplot(res_sig, aes(x=Phylum, y=log2FoldChange, color=Phylum)) + geom_hline(yintercept = c(10,-10)) + geom_jitter(size=3, width = 0.2) + theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5)) + theme(legend.position = "none") + ggtitle(label = label.t) + geom_text_repel(aes(label=ifelse(log2FoldChange &gt;= 10 | log2FoldChange &lt;= -10, ifelse(test = (is.na(Genus)), as.character(paste(Family,"_X", sep = "")), as.character(Genus) ),'')), max.overlaps = 100, force_pull = 0, force = 0.5)
+ </code></pre>
+<p>} }</p>
+<p>stage.deseq.plot = ggarrange(plotlist = stage.deseq[c(1,7,12,16,19,21)], ncol = 2, nrow = 3, align = “hv”) ggsave(filename = “Deseq-stage.pdf”, plot = stage.deseq.plot, device = “pdf”, width = height<em>2.5, height = width</em>2.5, units = “mm”)</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

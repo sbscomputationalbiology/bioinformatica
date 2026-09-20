@@ -1,0 +1,1482 @@
+{
+  "table_of_contents": [
+    {
+      "title": "Phylogeny of Nitrogenase\nStructural and Assembly\nComponents Reveals New Insights\ninto the Origin and Distribution of\nNitrogen Fixation across Bacteria\nand Archaea",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          53.38135212434629,
+          387.7394744519771
+        ],
+        [
+          489.4261503820155,
+          387.7394744519771
+        ],
+        [
+          489.4261503820155,
+          574.5217590332031
+        ],
+        [
+          53.38135212434629,
+          574.5217590332031
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          53.43347621504546,
+          353.70823505024555
+        ],
+        [
+          98.09379961989089,
+          353.70823505024555
+        ],
+        [
+          98.09379961989089,
+          370.4003691023625
+        ],
+        [
+          53.43347621504546,
+          370.4003691023625
+        ]
+      ]
+    },
+    {
+      "title": "Article",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          33.581886522115326,
+          99.43435155336918
+        ],
+        [
+          63.81228852932639,
+          99.43435155336918
+        ],
+        [
+          63.81228852932639,
+          112.95770263671875
+        ],
+        [
+          33.581886522115326,
+          112.95770263671875
+        ]
+      ]
+    },
+    {
+      "title": "Phylogeny of Nitrogenase Structural and Assembly\nComponents Reveals New Insights into the Origin and\nDistribution of Nitrogen Fixation across Bacteria and Archaea",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          33.750049754414206,
+          111.96501291466947
+        ],
+        [
+          542.103283168687,
+          111.96501291466947
+        ],
+        [
+          542.103283168687,
+          171.46722412109375
+        ],
+        [
+          33.750049754414206,
+          171.46722412109375
+        ]
+      ]
+    },
+    {
+      "title": "1. Introduction",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          164.2484948761217,
+          541.920136775274
+        ],
+        [
+          235.78537671451903,
+          541.920136775274
+        ],
+        [
+          235.78537671451903,
+          556.8560485839844
+        ],
+        [
+          164.2484948761217,
+          556.8560485839844
+        ]
+      ]
+    },
+    {
+      "title": "2. Materials and Methods",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          164.16547845412862,
+          474.3366112237728
+        ],
+        [
+          284.70062717082214,
+          474.3366112237728
+        ],
+        [
+          284.70062717082214,
+          489.68084716796875
+        ],
+        [
+          164.16547845412862,
+          489.68084716796875
+        ]
+      ]
+    },
+    {
+      "title": "3. Results",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          164.04403486660203,
+          291.0135930130127
+        ],
+        [
+          211.92830337024756,
+          291.0135930130127
+        ],
+        [
+          211.92830337024756,
+          306.37005615234375
+        ],
+        [
+          164.04403486660203,
+          306.37005615234375
+        ]
+      ]
+    },
+    {
+      "title": "3.1. Biochemical Evidence of Diazotrophy",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          163.59283923862563,
+          265.4867712956715
+        ],
+        [
+          335.4453085027353,
+          265.4867712956715
+        ],
+        [
+          335.4453085027353,
+          281.36370849609375
+        ],
+        [
+          163.59283923862563,
+          281.36370849609375
+        ]
+      ]
+    },
+    {
+      "title": "3.2. Phylogeny of Nitrogenase",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          163.79448163779617,
+          416.83137687486084
+        ],
+        [
+          290.06377666482996,
+          416.83137687486084
+        ],
+        [
+          290.06377666482996,
+          432.2986755371094
+        ],
+        [
+          163.79448163779617,
+          432.2986755371094
+        ]
+      ]
+    },
+    {
+      "title": "3.3. Distribution and Phylogeny of Nitrogenase in Various Phyla",
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          163.71948280622738,
+          412.51526031086513
+        ],
+        [
+          430.9227153480203,
+          412.51526031086513
+        ],
+        [
+          430.9227153480203,
+          428.7144470214844
+        ],
+        [
+          163.71948280622738,
+          428.7144470214844
+        ]
+      ]
+    },
+    {
+      "title": "3.3.1. Proteobacteria",
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          164.30637042528434,
+          427.36802807856327
+        ],
+        [
+          256.70349920546676,
+          427.36802807856327
+        ],
+        [
+          256.70349920546676,
+          442.2342224121094
+        ],
+        [
+          164.30637042528434,
+          442.2342224121094
+        ]
+      ]
+    },
+    {
+      "title": "3.3.2. Archaea",
+      "heading_level": null,
+      "page_id": 9,
+      "polygon": [
+        [
+          163.68903887001633,
+          166.56246880304568
+        ],
+        [
+          229.92089874498188,
+          166.56246880304568
+        ],
+        [
+          229.92089874498188,
+          181.0103759765625
+        ],
+        [
+          163.68903887001633,
+          181.0103759765625
+        ]
+      ]
+    },
+    {
+      "title": "3.3.3. Firmicutes",
+      "heading_level": null,
+      "page_id": 9,
+      "polygon": [
+        [
+          163.49749863478038,
+          329.10218334113074
+        ],
+        [
+          240.6275431827574,
+          329.10218334113074
+        ],
+        [
+          240.6275431827574,
+          344.4974670410156
+        ],
+        [
+          163.49749863478038,
+          344.4974670410156
+        ]
+      ]
+    },
+    {
+      "title": "3.3.4. Cyanobacteria",
+      "heading_level": null,
+      "page_id": 9,
+      "polygon": [
+        [
+          163.44426183436318,
+          567.5354865898751
+        ],
+        [
+          256.76960996536525,
+          567.5354865898751
+        ],
+        [
+          256.76960996536525,
+          583.3023986816406
+        ],
+        [
+          163.44426183436318,
+          583.3023986816406
+        ]
+      ]
+    },
+    {
+      "title": "3.3.5. Actinobacteria",
+      "heading_level": null,
+      "page_id": 12,
+      "polygon": [
+        [
+          163.84076604194544,
+          291.16170424939475
+        ],
+        [
+          257.3928058153436,
+          291.16170424939475
+        ],
+        [
+          257.3928058153436,
+          306.5394287109375
+        ],
+        [
+          163.84076604194544,
+          306.5394287109375
+        ]
+      ]
+    },
+    {
+      "title": "3.3.6. Bacteroidetes and Chlorobi",
+      "heading_level": null,
+      "page_id": 12,
+      "polygon": [
+        [
+          163.53537602268477,
+          403.98892225501584
+        ],
+        [
+          313.38211374739257,
+          403.98892225501584
+        ],
+        [
+          313.38211374739257,
+          419.8153991699219
+        ],
+        [
+          163.53537602268477,
+          419.8153991699219
+        ]
+      ]
+    },
+    {
+      "title": "3.3.7. Spirochaetes",
+      "heading_level": null,
+      "page_id": 12,
+      "polygon": [
+        [
+          163.89762221175417,
+          530.2452279529928
+        ],
+        [
+          249.2363278175181,
+          530.2452279529928
+        ],
+        [
+          249.2363278175181,
+          545.6434020996094
+        ],
+        [
+          163.89762221175417,
+          545.6434020996094
+        ]
+      ]
+    },
+    {
+      "title": "3.3.8. Other Anaerobes",
+      "heading_level": null,
+      "page_id": 12,
+      "polygon": [
+        [
+          163.55591250787154,
+          605.8331670582772
+        ],
+        [
+          268.3646263295517,
+          605.8331670582772
+        ],
+        [
+          268.3646263295517,
+          621.2604064941406
+        ],
+        [
+          163.55591250787154,
+          621.2604064941406
+        ]
+      ]
+    },
+    {
+      "title": "3.3.9. Nitrospira, Deferribacterales, and Aquificacea",
+      "heading_level": null,
+      "page_id": 13,
+      "polygon": [
+        [
+          163.36118814386708,
+          93.5707780357354
+        ],
+        [
+          395.72416475617916,
+          93.5707780357354
+        ],
+        [
+          395.72416475617916,
+          108.38238525390625
+        ],
+        [
+          163.36118814386708,
+          108.38238525390625
+        ]
+      ]
+    },
+    {
+      "title": "3.4. Alternative Nitrogenases",
+      "heading_level": null,
+      "page_id": 13,
+      "polygon": [
+        [
+          163.79167548114765,
+          169.05410342670822
+        ],
+        [
+          287.1485807865633,
+          169.05410342670822
+        ],
+        [
+          287.1485807865633,
+          183.9287109375
+        ],
+        [
+          163.79167548114765,
+          183.9287109375
+        ]
+      ]
+    },
+    {
+      "title": "3.5. Horizontal Gene Transfer (HGT)",
+      "heading_level": null,
+      "page_id": 14,
+      "polygon": [
+        [
+          164.04861634684448,
+          93.45482659276213
+        ],
+        [
+          319.1566801671717,
+          93.45482659276213
+        ],
+        [
+          319.1566801671717,
+          108.31268310546875
+        ],
+        [
+          164.04861634684448,
+          108.31268310546875
+        ]
+      ]
+    },
+    {
+      "title": "4. Discussion",
+      "heading_level": null,
+      "page_id": 15,
+      "polygon": [
+        [
+          163.84018190321453,
+          93.79319658559662
+        ],
+        [
+          228.70960118368228,
+          93.79319658559662
+        ],
+        [
+          228.70960118368228,
+          108.2130126953125
+        ],
+        [
+          163.84018190321453,
+          108.2130126953125
+        ]
+      ]
+    },
+    {
+      "title": "5. Conclusions",
+      "heading_level": null,
+      "page_id": 18,
+      "polygon": [
+        [
+          163.74534526219594,
+          93.97358202233659
+        ],
+        [
+          235.31575208226738,
+          93.97358202233659
+        ],
+        [
+          235.31575208226738,
+          108.2130126953125
+        ],
+        [
+          163.74534526219594,
+          108.2130126953125
+        ]
+      ]
+    },
+    {
+      "title": "Conflicts of Interest: The authors declare no conflict of interest.",
+      "heading_level": null,
+      "page_id": 19,
+      "polygon": [
+        [
+          163.64556062251555,
+          93.65348281928289
+        ],
+        [
+          418.9587097167969,
+          93.65348281928289
+        ],
+        [
+          418.9587097167969,
+          108.1004638671875
+        ],
+        [
+          163.64556062251555,
+          108.1004638671875
+        ]
+      ]
+    },
+    {
+      "title": "References",
+      "heading_level": null,
+      "page_id": 19,
+      "polygon": [
+        [
+          32.71206100041079,
+          117.10500824164835
+        ],
+        [
+          86.20565338519117,
+          117.10500824164835
+        ],
+        [
+          86.20565338519117,
+          130.6290283203125
+        ],
+        [
+          32.71206100041079,
+          130.6290283203125
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          21
+        ],
+        [
+          "Line",
+          10
+        ],
+        [
+          "Picture",
+          4
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          235
+        ],
+        [
+          "Line",
+          75
+        ],
+        [
+          "Text",
+          13
+        ],
+        [
+          "Picture",
+          3
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          232
+        ],
+        [
+          "Line",
+          55
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          132
+        ],
+        [
+          "Line",
+          36
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          129
+        ],
+        [
+          "Line",
+          33
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          29
+        ],
+        [
+          "Line",
+          7
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 6,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          187
+        ],
+        [
+          "Line",
+          49
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 7,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          89
+        ],
+        [
+          "Line",
+          31
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 8,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          53
+        ],
+        [
+          "Line",
+          9
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Text",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 9,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          284
+        ],
+        [
+          "Line",
+          52
+        ],
+        [
+          "Text",
+          8
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 10,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          22
+        ],
+        [
+          "Line",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 11,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          24
+        ],
+        [
+          "Line",
+          6
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Text",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 12,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          227
+        ],
+        [
+          "Line",
+          48
+        ],
+        [
+          "Text",
+          8
+        ],
+        [
+          "SectionHeader",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 13,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          62
+        ],
+        [
+          "Line",
+          19
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 14,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          78
+        ],
+        [
+          "Line",
+          23
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 15,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          247
+        ],
+        [
+          "Line",
+          55
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 16,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          213
+        ],
+        [
+          "Line",
+          55
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Text",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 17,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          103
+        ],
+        [
+          "Line",
+          24
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Text",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 18,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          145
+        ],
+        [
+          "Line",
+          53
+        ],
+        [
+          "Text",
+          7
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 19,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          420
+        ],
+        [
+          "Line",
+          58
+        ],
+        [
+          "ListItem",
+          26
+        ],
+        [
+          "Reference",
+          25
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 20,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          416
+        ],
+        [
+          "Line",
+          60
+        ],
+        [
+          "ListItem",
+          29
+        ],
+        [
+          "Reference",
+          26
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 21,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          69
+        ],
+        [
+          "Line",
+          9
+        ],
+        [
+          "ListItem",
+          4
+        ],
+        [
+          "Reference",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/microorganisms-09-01662-with-cover"
+}

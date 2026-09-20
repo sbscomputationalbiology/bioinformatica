@@ -1,0 +1,855 @@
+{
+  "table_of_contents": [
+    {
+      "title": "High-quality PacBio draft genome sequences of 17 free-living \nBradyrhizobium and four related Nitrobacteraceae strains \nisolated from arid soils in the Santa Catalina Mountains of \nSouthern Arizona",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          42.04758293862907,
+          99.09242248535156
+        ],
+        [
+          524.2632446289062,
+          99.09242248535156
+        ],
+        [
+          524.2632446289062,
+          178.46038818359375
+        ],
+        [
+          42.04758293862907,
+          178.46038818359375
+        ]
+      ]
+    },
+    {
+      "title": "Abstract",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          54.68703935368535,
+          253.66690063476562
+        ],
+        [
+          93.6164782930081,
+          253.66690063476562
+        ],
+        [
+          93.6164782930081,
+          267.40118408203125
+        ],
+        [
+          54.68703935368535,
+          267.40118408203125
+        ]
+      ]
+    },
+    {
+      "title": "Data Summary",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          42.15527635857801,
+          477.15504455566406
+        ],
+        [
+          132.49516015809488,
+          477.15504455566406
+        ],
+        [
+          132.49516015809488,
+          494.67767333984375
+        ],
+        [
+          42.15527635857801,
+          494.67767333984375
+        ]
+      ]
+    },
+    {
+      "title": "Introduction",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          42.179990581060835,
+          549.1748199462891
+        ],
+        [
+          127.69160411459973,
+          549.1748199462891
+        ],
+        [
+          127.69160411459973,
+          565.2315979003906
+        ],
+        [
+          42.179990581060835,
+          565.2315979003906
+        ]
+      ]
+    },
+    {
+      "title": "Methods",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          42.05812607003699,
+          116.82909393310547
+        ],
+        [
+          99.64278559840896,
+          116.82909393310547
+        ],
+        [
+          99.64278559840896,
+          132.573486328125
+        ],
+        [
+          42.05812607003699,
+          132.573486328125
+        ]
+      ]
+    },
+    {
+      "title": "Culture isolation",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          42.076443400731314,
+          131.74787521362305
+        ],
+        [
+          122.68157221027825,
+          131.74787521362305
+        ],
+        [
+          122.68157221027825,
+          146.55108642578125
+        ],
+        [
+          42.076443400731314,
+          146.55108642578125
+        ]
+      ]
+    },
+    {
+      "title": "Culture identification",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          42.287265940937644,
+          249.30601501464844
+        ],
+        [
+          143.39634570066514,
+          249.30601501464844
+        ],
+        [
+          143.39634570066514,
+          264.89874267578125
+        ],
+        [
+          42.287265940937644,
+          264.89874267578125
+        ]
+      ]
+    },
+    {
+      "title": "Culture scaling for genomic DNA and DNA isolation",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          42.038445748970545,
+          505.86451721191406
+        ],
+        [
+          281.2112572811713,
+          505.86451721191406
+        ],
+        [
+          281.2112572811713,
+          521.2463073730469
+        ],
+        [
+          42.038445748970545,
+          521.2463073730469
+        ]
+      ]
+    },
+    {
+      "title": "Genome sequencing and annotation",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          41.82411837637875,
+          612.8532257080078
+        ],
+        [
+          211.19377755037783,
+          612.8532257080078
+        ],
+        [
+          211.19377755037783,
+          628.093994140625
+        ],
+        [
+          41.82411837637875,
+          628.093994140625
+        ]
+      ]
+    },
+    {
+      "title": "Phylogenomic analysis",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          42.25730306015207,
+          64.47706031799316
+        ],
+        [
+          152.0982603750541,
+          64.47706031799316
+        ],
+        [
+          152.0982603750541,
+          79.0433349609375
+        ],
+        [
+          42.25730306015207,
+          79.0433349609375
+        ]
+      ]
+    },
+    {
+      "title": "Nitrogenase and nodulation gene identification",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          42.276983381218514,
+          331.1803894042969
+        ],
+        [
+          262.34905114161876,
+          331.1803894042969
+        ],
+        [
+          262.34905114161876,
+          346.38580322265625
+        ],
+        [
+          42.276983381218514,
+          346.38580322265625
+        ]
+      ]
+    },
+    {
+      "title": "Results and discussion",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          41.98833867224398,
+          386.02825927734375
+        ],
+        [
+          191.11729588736813,
+          386.02825927734375
+        ],
+        [
+          191.11729588736813,
+          402.746826171875
+        ],
+        [
+          41.98833867224398,
+          402.746826171875
+        ]
+      ]
+    },
+    {
+      "title": "Sequencing statistics",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          42.02998146422264,
+          402.5607604980469
+        ],
+        [
+          145.36413727959697,
+          402.5607604980469
+        ],
+        [
+          145.36413727959697,
+          416.7243957519531
+        ],
+        [
+          42.02998146422264,
+          416.7243957519531
+        ]
+      ]
+    },
+    {
+      "title": "Phylogenomic placement",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          41.94827649094896,
+          369.7068328857422
+        ],
+        [
+          162.26749718039102,
+          369.7068328857422
+        ],
+        [
+          162.26749718039102,
+          384.90960693359375
+        ],
+        [
+          41.94827649094896,
+          384.90960693359375
+        ]
+      ]
+    },
+    {
+      "title": "Genome statistics",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          41.822271467156014,
+          505.2828369140625
+        ],
+        [
+          128.64702600435885,
+          505.2828369140625
+        ],
+        [
+          128.64702600435885,
+          520.2434997558594
+        ],
+        [
+          41.822271467156014,
+          520.2434997558594
+        ]
+      ]
+    },
+    {
+      "title": "General genome features",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          42.568348344087,
+          587.4524688720703
+        ],
+        [
+          162.87206931318383,
+          587.4524688720703
+        ],
+        [
+          162.87206931318383,
+          601.6506958007812
+        ],
+        [
+          42.568348344087,
+          601.6506958007812
+        ]
+      ]
+    },
+    {
+      "title": "Conclusion",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          42.12927073135184,
+          680.6170349121094
+        ],
+        [
+          116.37056026891136,
+          680.6170349121094
+        ],
+        [
+          116.37056026891136,
+          697.4615936279297
+        ],
+        [
+          42.12927073135184,
+          697.4615936279297
+        ]
+      ]
+    },
+    {
+      "title": "Funding information",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          42.222664206094045,
+          109.42330169677734
+        ],
+        [
+          115.6074803734306,
+          109.42330169677734
+        ],
+        [
+          115.6074803734306,
+          121.8125
+        ],
+        [
+          42.222664206094045,
+          121.8125
+        ]
+      ]
+    },
+    {
+      "title": "Acknowledgements",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          42.21331512297431,
+          180.72489166259766
+        ],
+        [
+          113.20347460691514,
+          180.72489166259766
+        ],
+        [
+          113.20347460691514,
+          192.8125
+        ],
+        [
+          42.21331512297431,
+          192.8125
+        ]
+      ]
+    },
+    {
+      "title": "Author contributions",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          42.10700760079871,
+          205.49219512939453
+        ],
+        [
+          116.17749786376953,
+          205.49219512939453
+        ],
+        [
+          116.17749786376953,
+          217.3084716796875
+        ],
+        [
+          42.10700760079871,
+          217.3084716796875
+        ]
+      ]
+    },
+    {
+      "title": "Conflicts of interest",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          42.04478537225603,
+          229.97248077392578
+        ],
+        [
+          112.881465268075,
+          229.97248077392578
+        ],
+        [
+          112.881465268075,
+          241.80450439453125
+        ],
+        [
+          42.04478537225603,
+          241.80450439453125
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          42.050460680906355,
+          268.71141815185547
+        ],
+        [
+          84.9186296823343,
+          268.71141815185547
+        ],
+        [
+          84.9186296823343,
+          279.13304901123047
+        ],
+        [
+          42.050460680906355,
+          279.13304901123047
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          177
+        ],
+        [
+          "Line",
+          60
+        ],
+        [
+          "Text",
+          10
+        ],
+        [
+          "PageHeader",
+          4
+        ],
+        [
+          "SectionHeader",
+          4
+        ],
+        [
+          "Footnote",
+          4
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "Picture",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          10
+        ],
+        [
+          "Line",
+          3
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          257
+        ],
+        [
+          "Line",
+          69
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          5
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          289
+        ],
+        [
+          "Line",
+          71
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          4
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          268
+        ],
+        [
+          "Line",
+          47
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          691
+        ],
+        [
+          "Line",
+          176
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 6,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          442
+        ],
+        [
+          "Line",
+          86
+        ],
+        [
+          "ListItem",
+          23
+        ],
+        [
+          "Reference",
+          13
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          5
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/acmi-7-00884"
+}

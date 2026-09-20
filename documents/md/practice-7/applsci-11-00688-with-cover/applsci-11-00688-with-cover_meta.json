@@ -1,0 +1,1345 @@
+{
+  "table_of_contents": [
+    {
+      "title": "Can We Use Functional Annotation\nof Prokaryotic Taxa (FAPROTAX)\nto Assign the Ecological Functions\nof Soil Bacteria?",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          52.64806444759033,
+          340.9632093883049
+        ],
+        [
+          490.1004189748308,
+          340.9632093883049
+        ],
+        [
+          490.1004189748308,
+          467.2717590332031
+        ],
+        [
+          52.64806444759033,
+          467.2717590332031
+        ]
+      ]
+    },
+    {
+      "title": "Special Issue",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          52.7712424155747,
+          570.8696711906235
+        ],
+        [
+          145.8540799695839,
+          570.8696711906235
+        ],
+        [
+          145.8540799695839,
+          590.5050048828125
+        ],
+        [
+          52.7712424155747,
+          590.5050048828125
+        ]
+      ]
+    },
+    {
+      "title": "Edited by",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          52.99873145461383,
+          606.1641692435858
+        ],
+        [
+          97.15181547688597,
+          606.1641692435858
+        ],
+        [
+          97.15181547688597,
+          621.6157531738281
+        ],
+        [
+          52.99873145461383,
+          621.6157531738281
+        ]
+      ]
+    },
+    {
+      "title": "Article",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          52.95809330207575,
+          307.18821867130106
+        ],
+        [
+          98.41092357107014,
+          307.18821867130106
+        ],
+        [
+          98.41092357107014,
+          327.2550048828125
+        ],
+        [
+          52.95809330207575,
+          327.2550048828125
+        ]
+      ]
+    },
+    {
+      "title": "Article",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          33.38230578905389,
+          99.2488750073916
+        ],
+        [
+          63.903545888905555,
+          99.2488750073916
+        ],
+        [
+          63.903545888905555,
+          112.95770263671875
+        ],
+        [
+          33.38230578905389,
+          112.95770263671875
+        ]
+      ]
+    },
+    {
+      "title": "Can We Use Functional Annotation of Prokaryotic Taxa\n(FAPROTAX) to Assign the Ecological Functions of\nSoil Bacteria?",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          32.60733695234399,
+          111.54095211691444
+        ],
+        [
+          486.4718322753906,
+          111.54095211691444
+        ],
+        [
+          486.4718322753906,
+          171.46722412109375
+        ],
+        [
+          32.60733695234399,
+          171.46722412109375
+        ]
+      ]
+    },
+    {
+      "title": "1. Introduction",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          164.30414840736677,
+          91.98507483899327
+        ],
+        [
+          235.92719643542387,
+          91.98507483899327
+        ],
+        [
+          235.92719643542387,
+          106.4320068359375
+        ],
+        [
+          164.30414840736677,
+          106.4320068359375
+        ]
+      ]
+    },
+    {
+      "title": "2. Materials and Methods",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          163.998208610477,
+          228.28490346770994
+        ],
+        [
+          283.76492855350676,
+          228.28490346770994
+        ],
+        [
+          283.76492855350676,
+          243.60504150390625
+        ],
+        [
+          163.998208610477,
+          243.60504150390625
+        ]
+      ]
+    },
+    {
+      "title": "2.1. Sample Collection",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          163.89611032327414,
+          241.497098465849
+        ],
+        [
+          257.8370032322497,
+          241.497098465849
+        ],
+        [
+          257.8370032322497,
+          257.15472412109375
+        ],
+        [
+          163.89611032327414,
+          257.15472412109375
+        ]
+      ]
+    },
+    {
+      "title": "2.2. DNA Extraction, Sequencing and Taxonomy and Functional Assignment",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          163.4441358436565,
+          718.1524182096296
+        ],
+        [
+          481.9734624675299,
+          718.1524182096296
+        ],
+        [
+          481.9734624675299,
+          734.4656829833984
+        ],
+        [
+          163.4441358436565,
+          734.4656829833984
+        ]
+      ]
+    },
+    {
+      "title": "2.3. Validation of FAPROTAX",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          163.7765336889464,
+          404.057246085054
+        ],
+        [
+          291.6482357918766,
+          404.057246085054
+        ],
+        [
+          291.6482357918766,
+          419.4466857910156
+        ],
+        [
+          163.7765336889464,
+          419.4466857910156
+        ]
+      ]
+    },
+    {
+      "title": "2.3.1. Peer-Reviewed Publications: Difference in Functional Assignment Percentage of\nAquatic and Non-Aquatic Samples.",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          163.35854233902708,
+          417.9516954838115
+        ],
+        [
+          547.145110545891,
+          417.9516954838115
+        ],
+        [
+          547.145110545891,
+          443.4266357421875
+        ],
+        [
+          163.35854233902708,
+          443.4266357421875
+        ]
+      ]
+    },
+    {
+      "title": "2.3.2. Taxonomic Identification and FAPROTAX Assignment",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          163.5545495174994,
+          540.8241639651046
+        ],
+        [
+          433.70399455880033,
+          540.8241639651046
+        ],
+        [
+          433.70399455880033,
+          556.7020263671875
+        ],
+        [
+          163.5545495174994,
+          556.7020263671875
+        ]
+      ]
+    },
+    {
+      "title": "2.3.3. Validation of FAPROTAX on Soil Bacteria",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          163.5402667528436,
+          703.945958179124
+        ],
+        [
+          376.67805799969494,
+          703.945958179124
+        ],
+        [
+          376.67805799969494,
+          720.1894073486328
+        ],
+        [
+          163.5402667528436,
+          720.1894073486328
+        ]
+      ]
+    },
+    {
+      "title": "2.3.4. Additional Literature on Soil Functions",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          163.84261008774303,
+          353.3694531923941
+        ],
+        [
+          366.8880990362287,
+          353.3694531923941
+        ],
+        [
+          366.8880990362287,
+          369.30401611328125
+        ],
+        [
+          163.84261008774303,
+          369.30401611328125
+        ]
+      ]
+    },
+    {
+      "title": "3. Results",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          164.06302510220698,
+          321.34385913498994
+        ],
+        [
+          211.9273183519954,
+          321.34385913498994
+        ],
+        [
+          211.9273183519954,
+          336.6650695800781
+        ],
+        [
+          164.06302510220698,
+          336.6650695800781
+        ]
+      ]
+    },
+    {
+      "title": "3.1. Assignment Percentage of Aquatic and Non-Aquatic Samples Based on Previous Studies",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          164.00542444185885,
+          334.41496748342536
+        ],
+        [
+          542.8564785205447,
+          334.41496748342536
+        ],
+        [
+          542.8564785205447,
+          350.2146911621094
+        ],
+        [
+          164.00542444185885,
+          350.2146911621094
+        ]
+      ]
+    },
+    {
+      "title": "3.2. General Overview of Bioinformatics and FAPROTAX Assignment of Data Derived from Soil\nSamples",
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          164.5642504944309,
+          92.86844521553942
+        ],
+        [
+          559.7204033301518,
+          92.86844521553942
+        ],
+        [
+          559.7204033301518,
+          118.7735595703125
+        ],
+        [
+          164.5642504944309,
+          118.7735595703125
+        ]
+      ]
+    },
+    {
+      "title": "3.3. Correlation between the Number of Functionally Assigned OTUs and Taxonomically Identified\nOTUs in Each Taxonomic Rank",
+      "heading_level": null,
+      "page_id": 8,
+      "polygon": [
+        [
+          163.7902323148713,
+          488.87228869118013
+        ],
+        [
+          560.6733512205801,
+          488.87228869118013
+        ],
+        [
+          560.6733512205801,
+          514.9756774902344
+        ],
+        [
+          163.7902323148713,
+          514.9756774902344
+        ]
+      ]
+    },
+    {
+      "title": "3.4. Accuracy of Functionally Assigned Bacterial and Archaeal OTUs Based on FAPROTAX in\nSoil Systems",
+      "heading_level": null,
+      "page_id": 8,
+      "polygon": [
+        [
+          163.9962729350746,
+          612.1675594937875
+        ],
+        [
+          552.7385023294828,
+          612.1675594937875
+        ],
+        [
+          552.7385023294828,
+          638.7118835449219
+        ],
+        [
+          163.9962729350746,
+          638.7118835449219
+        ]
+      ]
+    },
+    {
+      "title": "3.5. Impact of Adding Reported Datasets to Functional Assignment Percentage",
+      "heading_level": null,
+      "page_id": 9,
+      "polygon": [
+        [
+          163.53069145913688,
+          92.56065047986785
+        ],
+        [
+          487.2545805577967,
+          92.56065047986785
+        ],
+        [
+          487.2545805577967,
+          108.31268310546875
+        ],
+        [
+          163.53069145913688,
+          108.31268310546875
+        ]
+      ]
+    },
+    {
+      "title": "4. Discussion",
+      "heading_level": null,
+      "page_id": 9,
+      "polygon": [
+        [
+          163.69583091447575,
+          412.7112622961654
+        ],
+        [
+          229.53786408931242,
+          412.7112622961654
+        ],
+        [
+          229.53786408931242,
+          428.82904052734375
+        ],
+        [
+          163.69583091447575,
+          428.82904052734375
+        ]
+      ]
+    },
+    {
+      "title": "Appendix A. Functional Phenotypes Derived from Tax4Fun and FAPROTAX. A\nSimulate Result from Bacterial Communities of Agricultural Rhizosphere of\nTrifolium pretense",
+      "heading_level": null,
+      "page_id": 12,
+      "polygon": [
+        [
+          164.02006227123346,
+          346.4160047549811
+        ],
+        [
+          527.576463060355,
+          346.4160047549811
+        ],
+        [
+          527.576463060355,
+          386.9378967285156
+        ],
+        [
+          164.02006227123346,
+          386.9378967285156
+        ]
+      ]
+    },
+    {
+      "title": "References",
+      "heading_level": null,
+      "page_id": 14,
+      "polygon": [
+        [
+          32.786575913128985,
+          565.9576317098453
+        ],
+        [
+          86.54912695896715,
+          565.9576317098453
+        ],
+        [
+          86.54912695896715,
+          580.8490600585938
+        ],
+        [
+          32.786575913128985,
+          580.8490600585938
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          27
+        ],
+        [
+          "Line",
+          13
+        ],
+        [
+          "SectionHeader",
+          4
+        ],
+        [
+          "Picture",
+          3
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          223
+        ],
+        [
+          "Line",
+          80
+        ],
+        [
+          "Text",
+          10
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Picture",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          163
+        ],
+        [
+          "Line",
+          55
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          213
+        ],
+        [
+          "Line",
+          54
+        ],
+        [
+          "Text",
+          7
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          169
+        ],
+        [
+          "Line",
+          56
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          128
+        ],
+        [
+          "Line",
+          51
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 6,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          98
+        ],
+        [
+          "Line",
+          37
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Reference",
+          2
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "Text",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 7,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          93
+        ],
+        [
+          "Line",
+          24
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 8,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          117
+        ],
+        [
+          "Line",
+          31
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 9,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          174
+        ],
+        [
+          "Line",
+          62
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 10,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          157
+        ],
+        [
+          "Line",
+          55
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 11,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          136
+        ],
+        [
+          "Line",
+          55
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 12,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          140
+        ],
+        [
+          "Line",
+          50
+        ],
+        [
+          "Text",
+          9
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 13,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          25
+        ],
+        [
+          "Line",
+          5
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Figure",
+          2
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "FigureGroup",
+          2
+        ],
+        [
+          "Reference",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 14,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          259
+        ],
+        [
+          "Line",
+          57
+        ],
+        [
+          "ListItem",
+          7
+        ],
+        [
+          "Reference",
+          7
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 15,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          365
+        ],
+        [
+          "Line",
+          59
+        ],
+        [
+          "ListItem",
+          25
+        ],
+        [
+          "Reference",
+          19
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 16,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          399
+        ],
+        [
+          "Line",
+          60
+        ],
+        [
+          "ListItem",
+          26
+        ],
+        [
+          "Reference",
+          26
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 17,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          160
+        ],
+        [
+          "Line",
+          22
+        ],
+        [
+          "ListItem",
+          10
+        ],
+        [
+          "Reference",
+          9
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 18,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          39
+        ],
+        [
+          "Line",
+          5
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "ListItem",
+          2
+        ],
+        [
+          "Reference",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/applsci-11-00688-with-cover"
+}
